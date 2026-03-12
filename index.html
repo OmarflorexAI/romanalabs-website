@@ -232,25 +232,31 @@
     .hamburger.active span:nth-child(1) { transform: translateY(3.75px) rotate(45deg); }
     .hamburger.active span:nth-child(2) { transform: translateY(-3.75px) rotate(-45deg); }
 
-    /* Mobile nav panel */
+    /* Mobile nav panel — opacity+transform only (GPU-accelerated, no jank) */
     .mobile-nav-panel {
       position: fixed;
       top: 72px;
       left: 0;
       right: 0;
       z-index: 99;
-      background: rgba(249, 249, 247, 0.97);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      background: rgba(249, 249, 247, 0.98);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid rgba(0,0,0,0.06);
-      padding: 0;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s ease;
+      padding: 24px clamp(20px, 4vw, 40px) 32px;
+      /* Hidden state */
+      opacity: 0;
+      transform: translateY(-8px);
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.16,1,0.3,1), visibility 0s linear 0.28s;
     }
     .mobile-nav-panel.open {
-      max-height: 400px;
-      padding: 24px clamp(20px, 4vw, 40px) 32px;
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.16,1,0.3,1), visibility 0s linear 0s;
     }
     .mobile-nav-panel a {
       display: block;

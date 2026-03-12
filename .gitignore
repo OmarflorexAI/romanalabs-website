@@ -1,0 +1,12 @@
+node_modules/
+screenshot-desktop.png
+screenshot-mobile.png
+screenshot.png
+nul
+
+# Dev-only files — not needed for production deployment
+package-lock.json
+tailwind.config.js
+input.css
+output.css
+.claude/

@@ -186,12 +186,29 @@
       box-shadow: 0 4px 16px rgba(212,175,55,0.25);
     }
 
-    /* Hamburger */
+    /* Mobile book button (next to hamburger) */
+    .mobile-book-btn {
+      display: none;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #0A0D0B;
+      background: var(--accent);
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      white-space: nowrap;
+      align-items: center;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .mobile-book-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+
+    /* Hamburger — 2 lines */
     .hamburger {
       display: none;
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
       border: 1px solid rgba(0,0,0,0.1);
       background: transparent;
       align-items: center;
@@ -208,12 +225,12 @@
       width: 18px;
       height: 1.5px;
       background: var(--text-primary);
-      transition: transform 0.3s ease, opacity 0.2s ease;
+      transition: transform 0.3s ease;
       margin: 3px 0;
     }
-    .hamburger.active span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
-    .hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-    .hamburger.active span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+    /* 2-line X: each span meets in the center */
+    .hamburger.active span:nth-child(1) { transform: translateY(3.75px) rotate(45deg); }
+    .hamburger.active span:nth-child(2) { transform: translateY(-3.75px) rotate(-45deg); }
 
     /* Mobile nav panel */
     .mobile-nav-panel {
@@ -267,6 +284,7 @@
       .site-header .nav-links { display: none; }
       .site-header .nav-cta-desktop { display: none; }
       .hamburger { display: flex; }
+      .mobile-book-btn { display: inline-flex; }
     }
 
     /* ===== Typography ===== */
@@ -427,19 +445,13 @@
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
     }
-    .marquee-wrap:hover .marquee-track {
-      animation-play-state: paused;
-    }
     .marquee-track img {
-      filter: grayscale(100%);
-      opacity: 0.6;
-      transition: filter 0.4s ease, opacity 0.4s ease, transform 0.3s ease;
-      will-change: filter, opacity;
+      opacity: 0.85;
+      transition: transform 0.3s ease, opacity 0.3s ease;
     }
     .marquee-track img:hover {
-      filter: grayscale(0%);
       opacity: 1;
-      transform: scale(1.08);
+      transform: scale(1.1) translateY(-3px);
     }
 
     /* ===== Cards ===== */
@@ -1185,6 +1197,24 @@
 
       /* Footer nav: wrap more comfortably */
       footer .flex-wrap { gap: 12px !important; }
+
+      /* Process section: smaller title on mobile */
+      .pss-panel-title { font-size: clamp(28px, 8vw, 38px); }
+      .pss-panel-desc  { font-size: 15px; }
+
+      /* Process section: mobile panel reveal animation */
+      .pss-panel-mobile-hidden {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1);
+      }
+      .pss-panel-mobile-hidden.revealed {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Grid divider: smaller on mobile */
+      .grid-divider { height: 80px; }
     }
 
     /* ─── Very small phones (≤ 374px) ──────────────────── */
@@ -1402,8 +1432,8 @@
         <a href="#security" class="nav-link">Security</a>
       </div>
       <a href="https://cal.com/omar-flores/discovery" target="_blank" class="nav-cta nav-cta-desktop">Book a Systems Audit</a>
+      <a href="https://cal.com/omar-flores/discovery" target="_blank" class="mobile-book-btn">Book a Call</a>
       <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
-        <span></span>
         <span></span>
         <span></span>
       </button>
@@ -2341,6 +2371,19 @@
       }
 
       window.addEventListener('scroll', onScroll, { passive: true });
+      // Mobile: add reveal animation per panel via IntersectionObserver
+      if (window.innerWidth <= 900) {
+        panels.forEach(function(p) {
+          p.classList.add('pss-panel-mobile-hidden');
+          var io = new IntersectionObserver(function(entries) {
+            entries.forEach(function(e) {
+              if (e.isIntersecting) { e.target.classList.add('revealed'); io.unobserve(e.target); }
+            });
+          }, { threshold: 0.15 });
+          io.observe(p);
+        });
+      }
+
       window.addEventListener('resize', function() {
         if (window.innerWidth <= 900) {
           panels.forEach(function(p) { p.classList.add('active'); });

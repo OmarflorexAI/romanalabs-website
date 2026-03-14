@@ -1065,6 +1065,7 @@
       position: relative;
       z-index: 10;
       margin-bottom: 8px;
+      padding-left: 14px; /* gutter so accent bar never overlaps text */
     }
     .feature-card .fc-title {
       display: inline-block;
@@ -1072,6 +1073,11 @@
       font-size: 16px;
       font-weight: 700;
       color: var(--text-primary);
+    }
+    /* Touch devices: bar appears on tap — hide it to avoid stuck collision */
+    @media (hover: none) {
+      .feature-card .fc-accent-bar { display: none; }
+      .feature-card .fc-title-wrap { padding-left: 0; }
     }
     /* Description */
     .feature-card .fc-desc {

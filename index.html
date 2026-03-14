@@ -291,6 +291,8 @@
       .site-header .nav-cta-desktop { display: none; }
       .hamburger { display: flex; }
       .mobile-book-btn { display: inline-flex; }
+      .logo-mark { width: 26px !important; height: 26px !important; }
+      .logo-text { font-size: 11px !important; letter-spacing: 0.14em !important; }
     }
 
     /* ===== Typography ===== */
@@ -1070,13 +1072,6 @@
       font-size: 16px;
       font-weight: 700;
       color: var(--text-primary);
-      /* Exit: wait for bar to fully fade (0.18s) before sliding back */
-      transition: transform 0.2s ease 0.2s;
-    }
-    .feature-card:hover .fc-title {
-      transform: translateX(8px);
-      /* Enter: no delay, snappy */
-      transition: transform 0.2s ease;
     }
     /* Description */
     .feature-card .fc-desc {
@@ -1204,23 +1199,17 @@
       /* Footer nav: wrap more comfortably */
       footer .flex-wrap { gap: 12px !important; }
 
-      /* Process section: smaller title on mobile */
-      .pss-panel-title { font-size: clamp(28px, 8vw, 38px); }
-      .pss-panel-desc  { font-size: 15px; }
-
-      /* Process section: mobile panel reveal animation */
-      .pss-panel-mobile-hidden {
-        opacity: 0;
-        transform: translateY(24px);
-        transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1);
-      }
-      .pss-panel-mobile-hidden.revealed {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      /* Process section: tighter on mobile */
+      .pss-panel-title { font-size: clamp(24px, 7vw, 34px); }
+      .pss-panel-desc  { font-size: 15px; line-height: 1.7; }
+      .pss-step-label  { font-size: 11px; }
+      .lp-pill         { font-size: 11px; padding: 4px 10px; }
 
       /* Grid divider: smaller on mobile */
       .grid-divider { height: 80px; }
+
+      /* Bento grid: single column on small phones */
+      .bento-success { gap: 12px; }
     }
 
     /* ─── Very small phones (≤ 374px) ──────────────────── */
@@ -1341,21 +1330,62 @@
       margin-bottom: 32px;
     }
     .pss-panel-pills { display: flex; flex-wrap: wrap; gap: 8px; }
-    /* Mobile fallback — stack all panels */
+    /* Mobile — vertical timeline with scroll-triggered reveal */
     @media (max-width: 900px) {
       .pss-outer { height: auto; }
       .pss-sticky { position: static; display: block; }
       .pss-nav { display: none; }
       .pss-detail { min-height: 0; position: static; }
+      /* Each panel: position relative so ::before/::after work */
       .pss-panel {
-        position: static; opacity: 1 !important; transform: none !important;
-        pointer-events: auto; padding-bottom: 48px;
-        border-bottom: 0.5px solid rgba(18,18,18,0.08); margin-bottom: 48px;
+        position: relative;
+        opacity: 0;
+        transform: translateY(28px);
+        pointer-events: auto;
+        padding-left: 40px;
+        padding-bottom: 56px;
+        margin-bottom: 0;
+        border-bottom: none;
+        transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1);
       }
-      .pss-panel:last-child { padding-bottom: 0; border-bottom: none; margin-bottom: 0; }
-      .pss-panel-inner { grid-template-columns: 1fr; gap: 28px; }
+      .pss-panel:last-child { padding-bottom: 0; }
+      /* Step dot */
+      .pss-panel::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 4px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 1.5px solid rgba(27,67,50,0.15);
+        background: var(--bg-primary);
+        z-index: 1;
+        transition: border-color 0.5s ease, background 0.5s ease, box-shadow 0.5s ease;
+      }
+      /* Connecting line to next panel */
+      .pss-panel:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        left: 9px;
+        top: 28px;
+        bottom: 0;
+        width: 1.5px;
+        background: linear-gradient(to bottom, rgba(27,67,50,0.12) 0%, rgba(27,67,50,0.04) 100%);
+      }
+      /* Revealed state */
+      .pss-panel.pss-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .pss-panel.pss-visible::before {
+        border-color: var(--emerald);
+        background: rgba(27,67,50,0.1);
+        box-shadow: 0 0 0 4px rgba(27,67,50,0.06);
+      }
+      .pss-panel-inner { grid-template-columns: 1fr; gap: 24px; }
       .pss-panel-art { justify-content: flex-start; }
-      .pss-art-svg { max-width: 200px; }
+      .pss-art-svg { max-width: 180px; }
     }
     /* Shared pill styles */
     .lp-pill {
@@ -1438,7 +1468,6 @@
         <a href="#security" class="nav-link">Security</a>
       </div>
       <a href="https://cal.com/omar-flores/discovery" target="_blank" class="nav-cta nav-cta-desktop">Book a Systems Audit</a>
-      <a href="https://cal.com/omar-flores/discovery" target="_blank" class="mobile-book-btn">Book a Call</a>
       <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
         <span></span>
         <span></span>
@@ -1452,7 +1481,6 @@
     <a href="#results" class="mobile-link">Results</a>
     <a href="#process" class="mobile-link">Process</a>
     <a href="#security" class="mobile-link">Security</a>
-    <a href="https://cal.com/omar-flores/discovery" target="_blank" class="mobile-cta">Book a Systems Audit</a>
   </div>
 
   <!-- ===== HERO ===== -->
@@ -2369,33 +2397,25 @@
         setStep(step);
       }
 
-      // Init: show first panel; on mobile show all
+      // Init
       if (window.innerWidth <= 900) {
-        panels.forEach(function(p) { p.classList.add('active'); });
+        // Mobile: reveal each panel as it scrolls into view
+        var mobileIO = new IntersectionObserver(function(entries) {
+          entries.forEach(function(e) {
+            if (e.isIntersecting) {
+              e.target.classList.add('pss-visible');
+              mobileIO.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -20px 0px' });
+        panels.forEach(function(p) { mobileIO.observe(p); });
       } else {
         setStep(0);
       }
 
       window.addEventListener('scroll', onScroll, { passive: true });
-      // Mobile: add reveal animation per panel via IntersectionObserver
-      if (window.innerWidth <= 900) {
-        panels.forEach(function(p) {
-          p.classList.add('pss-panel-mobile-hidden');
-          var io = new IntersectionObserver(function(entries) {
-            entries.forEach(function(e) {
-              if (e.isIntersecting) { e.target.classList.add('revealed'); io.unobserve(e.target); }
-            });
-          }, { threshold: 0.15 });
-          io.observe(p);
-        });
-      }
-
       window.addEventListener('resize', function() {
-        if (window.innerWidth <= 900) {
-          panels.forEach(function(p) { p.classList.add('active'); });
-        } else {
-          onScroll();
-        }
+        if (window.innerWidth > 900) onScroll();
       }, { passive: true });
     })();
 

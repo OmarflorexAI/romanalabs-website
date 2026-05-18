@@ -10,3 +10,5 @@ tailwind.config.js
 input.css
 output.css
 .claude/
+tailwind.exe.exe
+*.exe

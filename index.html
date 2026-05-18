@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ROMANALABS — We Don't Pitch AI. We Ship It.</title>
+  <title>ROMANALABS — AI Systems Shipped to Production in 4 Weeks</title>
+  <meta name="description" content="We build AI systems your team actually uses — from idea to production in 4 weeks. No pilots, no PowerPoints. Book a Systems Audit.">
+  <meta property="og:title" content="ROMANALABS — AI Systems Shipped to Production in 4 Weeks">
+  <meta property="og:description" content="We build AI systems your team actually uses — from idea to production in 4 weeks. No pilots, no PowerPoints.">
+  <meta property="og:type" content="website">
   <link rel="icon" type="image/svg+xml" href="brand_assets/Ministerstwo_Lacznosci_logo%20(1).svg">
   <script src="https://cdn.tailwindcss.com" data-cfasync="false"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1206,8 +1210,11 @@
       footer .flex-wrap { gap: 12px !important; }
 
       /* Process section: tighter on mobile */
-      .pss-panel-title { font-size: clamp(24px, 7vw, 34px); }
+      .pss-panel-title { font-size: clamp(24px, 7vw, 32px); }
       .pss-panel-desc  { font-size: 15px; line-height: 1.7; }
+      .pss-panel-tag   { font-size: 14px; margin-bottom: 16px; }
+      .pss-bullets li  { font-size: 14px; padding-left: 22px; margin-bottom: 12px; }
+      .pss-bullets li::before { width: 10px; top: 10px; }
       .pss-step-label  { font-size: 11px; }
       .lp-pill         { font-size: 11px; padding: 4px 10px; }
 
@@ -1258,11 +1265,13 @@
     .footer-link:hover { color: var(--text-primary); }
 
     /* ===== Process Sticky Scroll ===== */
-    .pss-outer { height: 340vh; position: relative; }
+    .pss-outer { height: 180vh; position: relative; }
     .pss-sticky {
-      position: sticky; top: 80px;
+      position: sticky; top: 0;
+      min-height: 100vh;
       display: grid; grid-template-columns: 300px 1fr;
-      gap: 100px; align-items: start; padding-bottom: 40px;
+      gap: 100px; align-content: center; align-items: center;
+      padding: 40px 0;
     }
     .pss-nav { position: relative; display: flex; flex-direction: column; }
     .pss-track {
@@ -1299,13 +1308,24 @@
     .pss-nav-item.active .pss-nav-num { color: var(--accent); }
     .pss-nav-title { font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
     .pss-nav-tagline { font-size: 13px; color: var(--text-muted); margin-top: 4px; font-style: italic; }
-    .pss-detail { position: relative; min-height: 560px; }
+    .pss-detail { position: relative; min-height: 540px; }
     .pss-panel {
       position: absolute; top: 0; left: 0; right: 0;
-      opacity: 0; pointer-events: none; transform: translateY(20px);
-      transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1);
+      opacity: 0; pointer-events: none;
+      transform: translateY(28px) scale(0.985);
+      filter: blur(3px);
+      /* Tiny smoothing only — JS drives values per frame so we keep transitions short */
+      transition:
+        opacity 0.14s linear,
+        transform 0.14s linear,
+        filter 0.18s ease-out;
+      will-change: opacity, transform, filter;
     }
-    .pss-panel.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .pss-panel.active {
+      opacity: 1; pointer-events: auto;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
     /* Panel inner: content left, art right */
     .pss-panel-inner {
       display: grid; grid-template-columns: 1fr minmax(200px, 280px);
@@ -1324,8 +1344,8 @@
     }
     .pss-panel-title {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(38px, 4.5vw, 58px); font-weight: 700;
-      color: var(--text-primary); letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 12px;
+      font-size: clamp(32px, 3.6vw, 46px); font-weight: 700;
+      color: var(--text-primary); letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 10px;
     }
     .pss-panel-tagline {
       font-family: 'Space Grotesk', sans-serif; font-size: 17px;
@@ -1336,10 +1356,35 @@
       margin-bottom: 32px;
     }
     .pss-panel-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pss-panel-tag {
+      display: inline-block;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px; font-weight: 500;
+      color: var(--emerald); font-style: italic;
+      margin-bottom: 22px;
+    }
+    .pss-bullets { list-style: none; padding: 0; margin: 0 0 8px; }
+    .pss-bullets li {
+      position: relative;
+      padding-left: 26px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+    .pss-bullets li:last-child { margin-bottom: 0; }
+    .pss-bullets li::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 11px;
+      width: 14px; height: 1.5px;
+      background: var(--accent);
+      border-radius: 1px;
+    }
     /* Mobile — vertical timeline with scroll-triggered reveal */
     @media (max-width: 900px) {
       .pss-outer { height: auto; }
-      .pss-sticky { position: static; display: block; }
+      .pss-sticky { position: static; display: block; min-height: 0; padding: 0; }
       .pss-nav { display: none; }
       .pss-detail { min-height: 0; position: static; }
       /* Each panel: position relative so ::before/::after work */
@@ -1347,6 +1392,7 @@
         position: relative;
         opacity: 0;
         transform: translateY(28px);
+        filter: none;
         pointer-events: auto;
         padding-left: 40px;
         padding-bottom: 56px;
@@ -1500,8 +1546,8 @@
 
 
     <div class="max-content relative z-[3]">
-      <h1 class="heading-xl max-w-[720px] mb-8 reveal">We don't pitch AI. <span class="brand-serif">We ship it.</span></h1>
-      <p class="text-[16px] lg:text-[18px] leading-[1.75] text-[#4A4A4A] max-w-[560px] mb-5 reveal reveal-delay-2">We help companies identify AI opportunities that will actually transform their business, then we build it, deploy it, and train your team to use it.</p>
+      <h1 class="heading-xl max-w-[760px] mb-8 reveal">We don't pitch AI. <span class="brand-serif">We ship it.</span></h1>
+      <p class="text-[16px] lg:text-[18px] leading-[1.75] text-[#4A4A4A] max-w-[600px] mb-5 reveal reveal-delay-2">AI systems shipped to production in 4 weeks — built into your workflow, owned by your team, measured in revenue. No pilots. No PowerPoints. Just leverage.</p>
       <div class="hero-buttons flex flex-wrap gap-4 mt-8 reveal reveal-delay-3">
         <a href="https://cal.com/omar-flores/discovery" target="_blank" class="btn-shine inline-flex items-center gap-2 text-[#0A0D0B] text-[14px] font-semibold px-8 py-4 rounded-full transition-all">
           Book a Systems Audit
@@ -1517,7 +1563,7 @@
 
   <!-- ===== SOCIAL PROOF MARQUEE ===== -->
   <section class="py-10 relative">
-    <p class="text-center text-[11px] text-[#8A9690] mb-8 uppercase tracking-[0.2em] font-medium" style="font-family:'Space Grotesk',sans-serif;">Trusted by teams building with</p>
+    <p class="text-center text-[11px] text-[#8A9690] mb-8 uppercase tracking-[0.2em] font-medium" style="font-family:'Space Grotesk',sans-serif;">We build on the stack you already use</p>
     <div class="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#F9F9F7] to-transparent z-10 pointer-events-none"></div>
     <div class="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#F9F9F7] to-transparent z-10 pointer-events-none"></div>
     <div class="overflow-hidden marquee-wrap">
@@ -1572,8 +1618,8 @@
     <div class="max-content">
       <div class="text-center mb-14">
         <p class="section-label mb-5 reveal">THE PROBLEM</p>
-        <h2 class="heading-lg mb-6 reveal reveal-delay-1">Most AI projects die <span class="brand">between demo and production.</span></h2>
-        <p class="text-[15px] lg:text-[16px] leading-[1.75] text-[#4A4A4A] max-w-[580px] mx-auto reveal reveal-delay-2">You're not behind. You're just stuck in the same place everyone gets stuck.</p>
+        <h2 class="heading-lg mb-6 reveal reveal-delay-1">85% of AI projects die <span class="brand">between demo and production.</span></h2>
+        <p class="text-[15px] lg:text-[16px] leading-[1.75] text-[#4A4A4A] max-w-[600px] mx-auto reveal reveal-delay-2">Yours doesn't have to. Here are the four walls every AI initiative slams into — and how we walk through them.</p>
       </div>
 
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
@@ -1611,8 +1657,8 @@
           <p class="section-label">PROOF, NOT PROMISES</p>
           <span class="w-6 h-[1.5px] bg-emerald"></span>
         </div>
-        <h2 class="heading-lg mb-6 reveal reveal-delay-1">Success <span class="brand">Stories.</span></h2>
-        <p class="text-[15px] lg:text-[16px] leading-[1.75] text-[#4A5D52] max-w-[580px] mx-auto reveal reveal-delay-2">Real results from organizations that trusted us to transform their AI capabilities.</p>
+        <h2 class="heading-lg mb-6 reveal reveal-delay-1">Shipped. Live. <span class="brand">Paying back.</span></h2>
+        <p class="text-[15px] lg:text-[16px] leading-[1.75] text-[#4A5D52] max-w-[580px] mx-auto reveal reveal-delay-2">Three systems we built. Three companies running them every day. Real numbers, real timelines.</p>
       </div>
 
       <div class="bento-success">
@@ -1620,7 +1666,7 @@
         <div class="card bento-card bento-primary p-7 lg:p-8 flex flex-col reveal">
           <span class="text-[10px] font-bold uppercase tracking-[0.14em] text-accent bg-accent/10 px-3 py-1.5 rounded-md self-start mb-6">SaaS</span>
           <h3 class="text-[19px] font-bold text-[#1B2A21] mb-3" style="font-family:'Space Grotesk',sans-serif;">Automated Lead Qualification Pipeline</h3>
-          <p class="text-[13px] text-[#4A5D52] leading-[1.7] mb-8">Their sales team was drowning in unqualified leads. We built an AI system that scores, enriches, and routes — eliminating 40+ hours of manual triage every week.</p>
+          <p class="text-[13px] text-[#4A5D52] leading-[1.7] mb-8">Their sales team was drowning in unqualified leads. We built an AI that scores, enriches, and routes every inbound — and gave them back 40+ hours a week to actually sell.</p>
           <div class="grid grid-cols-2 gap-x-6 gap-y-5 mt-auto">
             <div>
               <p class="text-[24px] font-bold text-accent" style="font-family:'Space Grotesk',sans-serif;">847K</p>
@@ -1645,7 +1691,7 @@
         <div class="card bento-card p-7 lg:p-8 flex flex-col reveal reveal-delay-1">
           <span class="text-[10px] font-bold uppercase tracking-[0.14em] text-accent bg-accent/10 px-3 py-1.5 rounded-md self-start mb-6">E-Commerce</span>
           <h3 class="text-[19px] font-bold text-[#1B2A21] mb-3" style="font-family:'Space Grotesk',sans-serif;">Intelligent Inventory & Order System</h3>
-          <p class="text-[13px] text-[#4A5D52] leading-[1.7] mb-8">Stockouts were costing them six figures a quarter. We deployed predictive reordering with multi-channel sync — and stockouts dropped 89% in month one.</p>
+          <p class="text-[13px] text-[#4A5D52] leading-[1.7] mb-8">Stockouts were bleeding them six figures a quarter. We deployed predictive reordering with multi-channel sync — stockouts dropped 89% in month one and never came back.</p>
           <div class="grid grid-cols-2 gap-x-6 gap-y-5 mt-auto">
             <div>
               <p class="text-[24px] font-bold text-accent" style="font-family:'Space Grotesk',sans-serif;">$1.2M</p>
@@ -1670,7 +1716,7 @@
         <div class="card bento-card p-7 lg:p-8 flex flex-col reveal reveal-delay-2">
           <span class="text-[10px] font-bold uppercase tracking-[0.14em] text-accent bg-accent/10 px-3 py-1.5 rounded-md self-start mb-6">Agency</span>
           <h3 class="text-[19px] font-bold text-[#1B2A21] mb-3" style="font-family:'Space Grotesk',sans-serif;">AI Content Production Engine</h3>
-          <p class="text-[13px] text-[#4A5D52] leading-[1.7] mb-8">12 client accounts. 500+ posts a month. One content team. We built the AI workflow that made it possible — with human approval at every stage.</p>
+          <p class="text-[13px] text-[#4A5D52] leading-[1.7] mb-8">12 client accounts. 500+ posts a month. One content team. We built the AI workflow that made it possible — without sacrificing brand voice or human approval.</p>
           <div class="grid grid-cols-2 gap-x-6 gap-y-5 mt-auto">
             <div>
               <p class="text-[24px] font-bold text-accent" style="font-family:'Space Grotesk',sans-serif;">500+</p>
@@ -1701,7 +1747,7 @@
       <p class="section-label mb-5 reveal">THE SCOREBOARD</p>
       <h2 class="heading-lg max-w-[380px] mb-10 reveal reveal-delay-1">Numbers don't <span class="brand">negotiate.</span></h2>
 
-      <p class="text-[11px] text-[#888888] uppercase tracking-[0.16em] mb-10 reveal reveal-delay-2" style="font-family:'Inter',sans-serif;">Average across 50+ deployments</p>
+      <p class="text-[11px] text-[#888888] uppercase tracking-[0.16em] mb-10 reveal reveal-delay-2" style="font-family:'Inter',sans-serif;">Measured across every system we've shipped</p>
 
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 mb-20">
         <div class="reveal">
@@ -1721,8 +1767,8 @@
         </div>
         <div class="reveal reveal-delay-3">
           <div class="w-10 h-[2px] bg-emerald/60 mb-5"></div>
-          <p class="stat-num"><span class="count-up" data-target="1" data-suffix="+">0</span></p>
-          <p class="text-[13px] text-[#4A5D52] mt-3">Year Building AI Systems</p>
+          <p class="stat-num"><span class="count-up" data-target="4" data-suffix=" wks">0</span></p>
+          <p class="text-[13px] text-[#4A5D52] mt-3">Average Time to Production</p>
         </div>
       </div>
 
@@ -1730,29 +1776,29 @@
         <div class="flex items-start gap-4 py-6 border-t border-black/[0.14] reveal">
           <div class="w-1.5 h-1.5 rounded-full bg-emerald flex-shrink-0 mt-2"></div>
           <div>
-            <p class="text-[14px] font-semibold text-[#1B2A21] mb-1.5" style="font-family:'Space Grotesk',sans-serif;">AI-Native, Not AI-Bolted</p>
-            <p class="text-[12px] text-[#4A5D52] leading-[1.6]">We don't retrofit. We architect from AI first — so it compounds, not decays.</p>
+            <p class="text-[14px] font-semibold text-[#1B2A21] mb-1.5" style="font-family:'Space Grotesk',sans-serif;">AI-Native, Not Bolted On</p>
+            <p class="text-[12px] text-[#4A5D52] leading-[1.6]">We architect with AI at the core — so it compounds in value instead of decaying in usefulness.</p>
           </div>
         </div>
         <div class="flex items-start gap-4 py-6 border-t border-black/[0.14] reveal reveal-delay-1">
           <div class="w-1.5 h-1.5 rounded-full bg-emerald flex-shrink-0 mt-2"></div>
           <div>
             <p class="text-[14px] font-semibold text-[#1B2A21] mb-1.5" style="font-family:'Space Grotesk',sans-serif;">Built for Your Workflow</p>
-            <p class="text-[12px] text-[#4A5D52] leading-[1.6]">No templates. Every system maps to your exact operations and stack.</p>
+            <p class="text-[12px] text-[#4A5D52] leading-[1.6]">No templates, no copy-paste. Every system maps to your exact ops, stack, and team.</p>
           </div>
         </div>
         <div class="flex items-start gap-4 py-6 border-t border-black/[0.14] reveal reveal-delay-2">
           <div class="w-1.5 h-1.5 rounded-full bg-emerald flex-shrink-0 mt-2"></div>
           <div>
-            <p class="text-[14px] font-semibold text-[#1B2A21] mb-1.5" style="font-family:'Space Grotesk',sans-serif;">One Team, Zero Handoffs</p>
-            <p class="text-[12px] text-[#4A5D52] leading-[1.6]">Strategy, engineering, and ops — all under one roof. No finger-pointing.</p>
+            <p class="text-[14px] font-semibold text-[#1B2A21] mb-1.5" style="font-family:'Space Grotesk',sans-serif;">One Team. Zero Handoffs.</p>
+            <p class="text-[12px] text-[#4A5D52] leading-[1.6]">Strategy, engineering, and ops — under one roof. Nobody to blame, nothing to chase.</p>
           </div>
         </div>
         <div class="flex items-start gap-4 py-6 border-t border-black/[0.14] reveal reveal-delay-3">
           <div class="w-1.5 h-1.5 rounded-full bg-emerald flex-shrink-0 mt-2"></div>
           <div>
-            <p class="text-[14px] font-semibold text-[#1B2A21] mb-1.5" style="font-family:'Space Grotesk',sans-serif;">No Black Boxes</p>
-            <p class="text-[12px] text-[#4A5D52] leading-[1.6]">Real-time dashboards. You see everything we see. Always.</p>
+            <p class="text-[14px] font-semibold text-[#1B2A21] mb-1.5" style="font-family:'Space Grotesk',sans-serif;">Receipts, Not Promises</p>
+            <p class="text-[12px] text-[#4A5D52] leading-[1.6]">Live dashboards from day one. You see what we see — every step, every metric.</p>
           </div>
         </div>
       </div>
@@ -1765,7 +1811,8 @@
     <div class="max-content" style="padding: 0 clamp(20px, 5vw, 40px);">
       <div class="text-center mb-16">
         <p class="section-label mb-4 reveal">PROCESS</p>
-        <h2 class="heading-lg reveal reveal-delay-1">How we <span class="brand">work.</span></h2>
+        <h2 class="heading-lg mb-6 reveal reveal-delay-1">How we <span class="brand">work.</span></h2>
+        <p class="text-[15px] lg:text-[16px] leading-[1.75] text-[#4A4A4A] max-w-[560px] mx-auto reveal reveal-delay-2">Three phases. Real production. Zero pilot purgatory.</p>
       </div>
 
       <!-- Sticky scroll area -->
@@ -1779,24 +1826,24 @@
               <div class="pss-nav-dot"></div>
               <div>
                 <div class="pss-nav-num">01</div>
-                <div class="pss-nav-title">Identify</div>
-                <div class="pss-nav-tagline">Find the 5% worth building.</div>
+                <div class="pss-nav-title">Discover</div>
+                <div class="pss-nav-tagline">Understand first, automate second.</div>
               </div>
             </div>
             <div class="pss-nav-item">
               <div class="pss-nav-dot"></div>
               <div>
                 <div class="pss-nav-num">02</div>
-                <div class="pss-nav-title">Develop</div>
-                <div class="pss-nav-tagline">Built right, from day one.</div>
+                <div class="pss-nav-title">Build</div>
+                <div class="pss-nav-tagline">Tested before launch.</div>
               </div>
             </div>
             <div class="pss-nav-item">
               <div class="pss-nav-dot"></div>
               <div>
                 <div class="pss-nav-num">03</div>
-                <div class="pss-nav-title">Adopt</div>
-                <div class="pss-nav-tagline">It becomes how work gets done.</div>
+                <div class="pss-nav-title">Launch</div>
+                <div class="pss-nav-tagline">Continuous improvement.</div>
               </div>
             </div>
           </div>
@@ -1808,14 +1855,13 @@
               <div class="pss-panel-inner">
                 <div class="pss-panel-content">
                   <span class="pss-step-label">Phase One</span>
-                  <h3 class="pss-panel-title">Identify</h3>
-                  <p class="pss-panel-desc">Every project starts with clarity. We start by understanding how your team actually works — where time is being lost, what slows things down, and why work piles up. From there, we find the 5% of opportunities worth building.</p>
-
-                  <div class="pss-panel-pills">
-                    <span class="lp-pill"><span class="lp-pill-dot"></span>Workflow Audit</span>
-                    <span class="lp-pill"><span class="lp-pill-dot"></span>Opportunity Mapping</span>
-                    <span class="lp-pill"><span class="lp-pill-dot"></span>ROI Priority Matrix</span>
-                  </div>
+                  <h3 class="pss-panel-title">Discover &amp; Diagnose</h3>
+                  <span class="pss-panel-tag">Understand first, automate second.</span>
+                  <ul class="pss-bullets">
+                    <li>We learn how your business actually works: goals, constraints, handoffs, and what a 'win' looks like.</li>
+                    <li>We map your tech stack and where data lives: CRMs, inboxes, spreadsheets, internal tools.</li>
+                    <li>We audit processes to find real bottlenecks and decide what should and shouldn't be automated.</li>
+                  </ul>
                 </div>
                 <div class="pss-panel-art">
                   <svg class="pss-art-svg" viewBox="0 0 280 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1855,14 +1901,13 @@
               <div class="pss-panel-inner">
                 <div class="pss-panel-content">
                   <span class="pss-step-label">Phase Two</span>
-                  <h3 class="pss-panel-title">Develop</h3>
-                  <p class="pss-panel-desc">Once we know what matters, we move quickly and get to the building. Our team plans and develops solutions that fit seamlessly into your existing systems — built the right way, so they work exactly as they should from day one.</p>
-
-                  <div class="pss-panel-pills">
-                    <span class="lp-pill"><span class="lp-pill-dot"></span>System Architecture</span>
-                    <span class="lp-pill"><span class="lp-pill-dot"></span>Integration Design</span>
-                    <span class="lp-pill"><span class="lp-pill-dot"></span>4-Week Sprint</span>
-                  </div>
+                  <h3 class="pss-panel-title">Design, Build &amp; Validate</h3>
+                  <span class="pss-panel-tag">Custom solutions, tested before launch.</span>
+                  <ul class="pss-bullets">
+                    <li>We prioritize high-impact opportunities and decide where AI helps, and where it doesn't.</li>
+                    <li>We design and build custom workflows, test different approaches on real data, and explain our choices in plain language.</li>
+                    <li>We run evaluations in a real-world environment before full rollout.</li>
+                  </ul>
                 </div>
                 <div class="pss-panel-art">
                   <svg class="pss-art-svg" viewBox="0 0 280 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1897,14 +1942,13 @@
               <div class="pss-panel-inner">
                 <div class="pss-panel-content">
                   <span class="pss-step-label">Phase Three</span>
-                  <h3 class="pss-panel-title">Adopt</h3>
-                  <p class="pss-panel-desc">Then we make it real. We work side by side with your teams — training, fine-tuning, and helping them integrate your new systems into their everyday work. By the time we step back, it's not a project anymore — it's just how work gets done.</p>
-
-                  <div class="pss-panel-pills">
-                    <span class="lp-pill"><span class="lp-pill-dot"></span>Team Training</span>
-                    <span class="lp-pill"><span class="lp-pill-dot"></span>Live Monitoring</span>
-                    <span class="lp-pill"><span class="lp-pill-dot"></span>Scale Playbook</span>
-                  </div>
+                  <h3 class="pss-panel-title">Launch, Monitor &amp; Optimize</h3>
+                  <span class="pss-panel-tag">Continuous improvement, not a one-off project.</span>
+                  <ul class="pss-bullets">
+                    <li>We launch into production with clear success metrics and safeguards.</li>
+                    <li>We monitor performance, collect feedback from your team and customers, and fix issues quickly.</li>
+                    <li>We continuously refine prompts, logic, and models so the system improves as your business evolves.</li>
+                  </ul>
                 </div>
                 <div class="pss-panel-art">
                   <svg class="pss-art-svg" viewBox="0 0 280 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1964,7 +2008,8 @@
     <div class="max-content">
       <div class="text-center mb-14">
         <p class="section-label mb-5 reveal">SECURITY</p>
-        <h2 class="heading-lg reveal reveal-delay-1">Zero-Data Retention Architecture. <span class="brand">Your IP stays yours.</span></h2>
+        <h2 class="heading-lg mb-6 reveal reveal-delay-1">Your data never trains anyone's model — <span class="brand">including ours.</span></h2>
+        <p class="text-[15px] lg:text-[16px] leading-[1.75] text-[#4A4A4A] max-w-[600px] mx-auto reveal reveal-delay-2">Zero retention by default. Private cloud deploy. Audit-ready by design. Your IP stays where it belongs — with you.</p>
         <div class="flex flex-wrap items-center justify-center gap-3 mt-8 reveal reveal-delay-2">
           <span class="compliance-badge">
             <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
@@ -2049,8 +2094,8 @@
       <div class="cta-box relative overflow-hidden rounded-[20px] reveal" style="background:var(--bg-card);border:2px solid rgba(255,255,255,0.08);">
         <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 p-8 sm:p-10 lg:p-14">
           <div class="max-w-[600px]">
-            <h2 class="text-[clamp(24px,4vw,36px)] font-semibold leading-[1.15] mb-4" style="font-family:'Space Grotesk',sans-serif;letter-spacing:-0.02em;color:var(--text-on-card);">Ready to exit the AI experimentation loop?</h2>
-            <p class="text-[15px] leading-[1.7]" style="color:var(--text-on-card-muted);">Book a Systems Audit — we map your highest-leverage AI opportunities and deliver a production-ready roadmap. No fluff, no retainer required.</p>
+            <h2 class="text-[clamp(24px,4vw,36px)] font-semibold leading-[1.15] mb-4" style="font-family:'Space Grotesk',sans-serif;letter-spacing:-0.02em;color:var(--text-on-card);">Stop running pilots. Start shipping systems.</h2>
+            <p class="text-[15px] leading-[1.7]" style="color:var(--text-on-card-muted);">Book a free 30-minute Systems Audit. You'll leave with your top 3 AI opportunities ranked by ROI and a 4-week build plan for the first one. No retainer, no pitch deck.</p>
           </div>
           <a href="https://cal.com/omar-flores/discovery" target="_blank" class="btn-shine inline-flex items-center gap-2 text-[#0A0D0B] text-[14px] font-semibold px-7 py-3.5 rounded-lg transition-all flex-shrink-0">
             Book a Systems Audit
@@ -2078,7 +2123,7 @@
               <img src="brand_assets/Ministerstwo_Lacznosci_logo%20(1).svg" alt="ROMANALABS" class="logo-mark logo-mark-footer">
               <span class="text-[14px] font-bold text-white tracking-[0.18em] uppercase" style="font-family:'Space Grotesk',sans-serif;">ROMANALABS</span>
             </a>
-            <p class="text-[13px] text-[#AAAAAA] leading-[1.65] max-w-[360px]">We help companies identify AI opportunities that will actually transform their business, then we build it, deploy it, and train your team to use it.</p>
+            <p class="text-[13px] text-[#AAAAAA] leading-[1.65] max-w-[360px]">We don't pitch AI. We ship it. Systems built into your workflow, owned by your team, measured in revenue — in 4 weeks.</p>
           </div>
 
           <!-- Social icons + contact -->
@@ -2367,7 +2412,7 @@
       });
     })();
 
-    // ===== Process Sticky Scroll =====
+    // ===== Process Sticky Scroll (continuous scroll-linked) =====
     (function() {
       var outer = document.getElementById('processStickyOuter');
       if (!outer) return;
@@ -2375,33 +2420,73 @@
       var navItems = Array.from(document.querySelectorAll('.pss-nav-item'));
       var panels = Array.from(document.querySelectorAll('.pss-panel'));
       var trackFill = document.getElementById('pssTrackFill');
-      var current = -1;
+      var currentStep = -1;
+      var ticking = false;
 
-      function setStep(index) {
-        if (index === current) return;
-        current = index;
+      function updateNav(step) {
+        if (step === currentStep) return;
+        currentStep = step;
         navItems.forEach(function(item, i) {
-          item.classList.toggle('active', i === index);
-          item.classList.toggle('passed', i < index);
+          item.classList.toggle('active', i === step);
+          item.classList.toggle('passed', i < step);
         });
+      }
+
+      function paint() {
+        ticking = false;
+        if (window.innerWidth <= 900) return;
+        if (panels.length === 0) return;
+
+        var rect = outer.getBoundingClientRect();
+        var scrollable = outer.offsetHeight - window.innerHeight;
+        if (scrollable <= 0) {
+          panels.forEach(function(p, i) {
+            p.style.opacity = i === 0 ? '1' : '0';
+            p.style.transform = i === 0 ? 'translateY(0) scale(1)' : '';
+            p.style.filter = i === 0 ? 'blur(0)' : '';
+            p.style.pointerEvents = i === 0 ? 'auto' : 'none';
+          });
+          updateNav(0);
+          return;
+        }
+
+        var scrolled = -rect.top;
+        var progress = Math.max(0, Math.min(1, scrolled / scrollable));
+        // floatIdx ranges 0 .. panels.length-1
+        var floatIdx = progress * (panels.length - 1);
+        var activeStep = Math.max(0, Math.min(panels.length - 1, Math.round(floatIdx)));
+
+        updateNav(activeStep);
+
         panels.forEach(function(panel, i) {
-          panel.classList.toggle('active', i === index);
+          var dist = Math.abs(floatIdx - i);
+          // Each panel lingers fully (opacity 1) when within 0.35 of its index,
+          // crossfades between 0.35 and 0.75, fully gone past 0.75.
+          var opacity;
+          if (dist < 0.35) opacity = 1;
+          else if (dist > 0.75) opacity = 0;
+          else opacity = 1 - (dist - 0.35) / 0.4;
+
+          // Slide: panel comes from below (+24px) when upcoming, goes up (-24px) when passed
+          var slide = (i - floatIdx) * 24;
+          var scale = 0.985 + 0.015 * opacity;
+          var blur = (1 - opacity) * 3;
+
+          panel.style.opacity = opacity.toFixed(3);
+          panel.style.transform = 'translateY(' + slide.toFixed(1) + 'px) scale(' + scale.toFixed(3) + ')';
+          panel.style.filter = blur > 0.05 ? 'blur(' + blur.toFixed(2) + 'px)' : 'blur(0)';
+          panel.style.pointerEvents = opacity > 0.5 ? 'auto' : 'none';
         });
+
         if (trackFill && navItems.length > 1) {
-          var pct = (index / (navItems.length - 1)) * 100;
-          trackFill.style.height = pct + '%';
+          trackFill.style.height = (progress * 100) + '%';
         }
       }
 
       function onScroll() {
-        if (window.innerWidth <= 900) return;
-        var outerTop = outer.getBoundingClientRect().top + window.scrollY;
-        var scrolled = window.scrollY - outerTop;
-        var scrollable = outer.offsetHeight - window.innerHeight;
-        if (scrollable <= 0) { setStep(0); return; }
-        var progress = Math.max(0, Math.min(1, scrolled / scrollable));
-        var step = Math.min(Math.floor(progress * panels.length), panels.length - 1);
-        setStep(step);
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(paint);
       }
 
       // Init
@@ -2417,7 +2502,7 @@
         }, { threshold: 0.12, rootMargin: '0px 0px -20px 0px' });
         panels.forEach(function(p) { mobileIO.observe(p); });
       } else {
-        setStep(0);
+        paint();
       }
 
       window.addEventListener('scroll', onScroll, { passive: true });

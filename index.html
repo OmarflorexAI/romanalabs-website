@@ -1477,132 +1477,290 @@
     }
     .compliance-badge svg { width: 13px; height: 13px; color: var(--emerald); flex-shrink: 0; }
 
-    /* ===== Lead-capture Modal ===== */
+    /* ===== Lead-capture Modal — Editorial Concierge ===== */
     .lead-modal-overlay {
       position: fixed; inset: 0; z-index: 10000;
-      background: rgba(10, 13, 11, 0.6);
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      background: rgba(10, 13, 11, 0.48);
+      backdrop-filter: blur(3px) saturate(1.05);
+      -webkit-backdrop-filter: blur(3px) saturate(1.05);
       display: flex; align-items: center; justify-content: center;
-      padding: 20px;
+      padding: clamp(16px, 4vw, 40px);
       opacity: 0; visibility: hidden; pointer-events: none;
-      transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+      transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.45s;
     }
     .lead-modal-overlay.open {
       opacity: 1; visibility: visible; pointer-events: auto;
-      transition: opacity 0.3s ease, visibility 0s linear 0s;
+      transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
     }
+    /* Grain layer matching the body noise — ties modal to the rest of the site */
+    .lead-modal-overlay::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 220px;
+    }
+
     .lead-modal {
       position: relative;
-      background: var(--bg-primary);
-      border: 1px solid rgba(18, 18, 18, 0.08);
-      border-radius: 18px;
-      width: 100%; max-width: 480px;
-      padding: 36px 32px 32px;
-      max-height: calc(100vh - 40px);
+      background: #FBFBF8;
+      width: 100%; max-width: 520px;
+      max-height: calc(100vh - 32px);
       overflow-y: auto;
-      transform: translateY(20px) scale(0.97);
-      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-      box-shadow: 0 24px 80px rgba(10, 13, 11, 0.25);
+      padding: clamp(28px, 4vw, 44px) clamp(24px, 4vw, 48px) clamp(28px, 4vw, 40px);
+      transform: translateY(28px) scale(0.985);
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow:
+        0 1px 0 rgba(212, 175, 55, 0.35),
+        0 30px 90px -20px rgba(10, 13, 11, 0.45),
+        0 8px 28px -8px rgba(10, 13, 11, 0.22);
+      /* Subtle paper edge — top gold hairline */
+      border-top: 2px solid var(--accent);
     }
     .lead-modal-overlay.open .lead-modal { transform: translateY(0) scale(1); }
-    .lead-modal-close {
-      position: absolute; top: 14px; right: 14px;
-      width: 32px; height: 32px; border-radius: 8px;
-      background: transparent; border: none;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--text-muted); cursor: pointer;
-      transition: background 0.2s ease, color 0.2s ease;
+
+    /* Header row: eyebrow tag + close */
+    .lead-modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: clamp(20px, 3vw, 28px);
     }
-    .lead-modal-close:hover { background: rgba(18,18,18,0.06); color: var(--text-primary); }
-    .lead-modal-eyebrow {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.18em;
-      text-transform: uppercase; color: var(--emerald);
-      margin-bottom: 10px;
+    .lead-modal-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10.5px; font-weight: 600;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--emerald);
+    }
+    .lead-modal-tag::before {
+      content: ''; width: 22px; height: 1px; background: var(--emerald); display: inline-block;
+    }
+    .lead-modal-close {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--text-muted);
+      background: transparent; border: none; cursor: pointer;
+      padding: 6px 2px;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: color 0.25s ease;
+    }
+    .lead-modal-close::before {
+      content: '×'; font-size: 18px; line-height: 0.6; font-weight: 400;
+      letter-spacing: normal;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .lead-modal-close:hover { color: var(--text-primary); }
+    .lead-modal-close:hover::before { transform: rotate(90deg); }
+
+    /* Editorial title block */
+    .lead-modal-kicker {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(11px, 1.2vw, 12px);
+      font-weight: 500; color: var(--text-muted);
+      letter-spacing: 0.04em; margin-bottom: 8px;
     }
     .lead-modal-title {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 26px; font-weight: 700; line-height: 1.15;
-      letter-spacing: -0.02em;
+      font-size: clamp(26px, 3.5vw, 34px); font-weight: 700;
+      line-height: 1.08; letter-spacing: -0.025em;
       color: var(--text-primary);
-      margin-bottom: 8px;
+      margin-bottom: 12px;
+      max-width: 12ch;
+    }
+    .lead-modal-title em {
+      font-style: normal;
+      color: var(--accent);
     }
     .lead-modal-sub {
-      font-size: 14px; line-height: 1.6; color: var(--text-secondary);
-      margin-bottom: 24px;
+      font-size: 14px; line-height: 1.65; color: var(--text-secondary);
+      margin-bottom: clamp(20px, 3vw, 28px);
+      max-width: 36ch;
     }
-    .lead-form { display: flex; flex-direction: column; gap: 14px; }
-    .lead-field { display: flex; flex-direction: column; gap: 6px; }
-    .lead-field label {
-      font-size: 12px; font-weight: 600; color: var(--text-primary);
-      letter-spacing: 0.02em;
+    .lead-modal-rule {
+      height: 1px; background: rgba(18, 18, 18, 0.1);
+      margin: 0 0 clamp(20px, 3vw, 26px);
+      position: relative;
+    }
+    .lead-modal-rule::after {
+      content: ''; position: absolute; left: 0; top: 0;
+      width: 56px; height: 1px; background: var(--accent);
+    }
+
+    /* Form */
+    .lead-form { display: flex; flex-direction: column; gap: 18px; }
+    .lead-field {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      column-gap: 14px; row-gap: 6px;
+      align-items: end;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .lead-modal-overlay.open .lead-field { opacity: 1; transform: translateY(0); }
+    .lead-modal-overlay.open .lead-field:nth-child(1) { transition-delay: 0.18s; }
+    .lead-modal-overlay.open .lead-field:nth-child(2) { transition-delay: 0.24s; }
+    .lead-modal-overlay.open .lead-field:nth-child(3) { transition-delay: 0.30s; }
+    .lead-modal-overlay.open .lead-field:nth-child(4) { transition-delay: 0.36s; }
+
+    .lead-field-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; font-weight: 600;
+      color: var(--accent); letter-spacing: 0.08em;
+      padding-bottom: 10px; align-self: end;
+    }
+    .lead-field-body { grid-column: 2 / 3; display: flex; flex-direction: column; gap: 4px; }
+    .lead-field-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--text-primary);
     }
     .lead-field input,
     .lead-field textarea {
       font-family: 'Inter', sans-serif;
-      font-size: 14px; color: var(--text-primary);
-      background: #fff;
-      border: 1px solid rgba(18, 18, 18, 0.12);
-      border-radius: 10px;
-      padding: 12px 14px;
+      font-size: 15px; font-weight: 400;
+      color: var(--text-primary);
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(18, 18, 18, 0.18);
+      border-radius: 0;
+      padding: 6px 0 8px;
       outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
       width: 100%;
+      transition: border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .lead-field textarea { resize: vertical; min-height: 70px; font-family: 'Inter', sans-serif; }
-    .lead-field input:focus,
-    .lead-field textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+    .lead-field textarea {
+      resize: none; min-height: 28px; line-height: 1.55;
+      overflow: hidden;
     }
     .lead-field input::placeholder,
-    .lead-field textarea::placeholder { color: var(--text-muted); }
-    .lead-submit {
-      margin-top: 8px;
-      background: var(--accent);
-      color: #0A0D0B;
+    .lead-field textarea::placeholder {
+      color: rgba(18, 18, 18, 0.32); font-weight: 400;
+    }
+    .lead-field input:hover,
+    .lead-field textarea:hover { border-bottom-color: rgba(18, 18, 18, 0.32); }
+    .lead-field input:focus,
+    .lead-field textarea:focus {
+      border-bottom-color: var(--accent);
+    }
+    .lead-field.has-value .lead-field-num { color: var(--emerald); }
+
+    .lead-error {
       font-family: 'Inter', sans-serif;
-      font-size: 14px; font-weight: 600;
-      padding: 14px 20px;
-      border: none; border-radius: 10px;
+      font-size: 12px; color: #8B2A2A;
+      min-height: 14px;
+      margin-top: -4px;
+    }
+
+    /* Footer: submit + alt path */
+    .lead-modal-foot {
+      margin-top: clamp(22px, 3vw, 30px);
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .lead-submit {
+      position: relative;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.06em;
+      color: #0A0D0B;
+      background: var(--accent);
+      border: none;
+      padding: 16px 24px;
       cursor: pointer;
-      transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.3s ease;
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      overflow: hidden;
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      transition: background 0.3s cubic-bezier(0.22, 1, 0.36, 1), transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+    }
+    .lead-submit::after {
+      content: ''; position: absolute;
+      top: 0; left: -100%; width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.32), transparent);
+      transform: skewX(-20deg);
+      transition: left 0.7s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .lead-submit:hover:not(:disabled) {
       background: var(--accent-hover);
       transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(212,175,55,0.25);
+      box-shadow: 0 12px 32px -8px rgba(212, 175, 55, 0.45);
     }
-    .lead-submit:disabled { opacity: 0.6; cursor: wait; }
-    .lead-secondary {
-      margin-top: 14px;
-      text-align: center;
+    .lead-submit:hover:not(:disabled)::after { left: 130%; }
+    .lead-submit:disabled { opacity: 0.55; cursor: wait; }
+    .lead-submit svg { transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+    .lead-submit:hover:not(:disabled) svg { transform: translateX(4px); }
+
+    .lead-alt {
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+      font-family: 'Inter', sans-serif;
       font-size: 12px; color: var(--text-muted);
     }
-    .lead-secondary a {
+    .lead-alt::before, .lead-alt::after {
+      content: ''; flex: 1; max-width: 60px;
+      height: 1px; background: rgba(18, 18, 18, 0.1);
+    }
+    .lead-alt a {
       color: var(--emerald); font-weight: 600;
-      text-decoration: none; border-bottom: 1px solid rgba(27, 67, 50, 0.3);
-      transition: border-color 0.2s ease;
+      text-decoration: none; letter-spacing: 0.02em;
+      border-bottom: 1px solid rgba(27, 67, 50, 0.25);
+      transition: border-color 0.3s ease, color 0.3s ease;
     }
-    .lead-secondary a:hover { border-color: var(--emerald); }
-    .lead-error {
-      font-size: 12px; color: #B33A3A;
-      margin-top: 4px; min-height: 16px;
-    }
+    .lead-alt a:hover { color: var(--emerald-hover); border-bottom-color: var(--emerald); }
+
+    /* Success view */
     .lead-success {
-      text-align: center; padding: 20px 0 8px;
+      padding: 12px 0 8px;
+      animation: leadSuccessIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
-    .lead-success-icon {
-      width: 56px; height: 56px; border-radius: 50%;
-      background: rgba(27, 67, 50, 0.08);
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 16px;
-      color: var(--emerald);
+    @keyframes leadSuccessIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
+    .lead-success-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; font-weight: 600;
+      color: var(--accent); letter-spacing: 0.18em;
+      margin-bottom: 14px;
+    }
+    .lead-success-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(28px, 4vw, 38px); font-weight: 700;
+      line-height: 1.05; letter-spacing: -0.025em;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+    }
+    .lead-success-title em {
+      font-style: normal; color: var(--accent);
+    }
+    .lead-success-body {
+      font-size: 14px; line-height: 1.7; color: var(--text-secondary);
+      margin-bottom: 18px;
+      max-width: 42ch;
+    }
+    .lead-success-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-primary);
+      text-decoration: none;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--accent);
+      transition: color 0.3s ease, gap 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .lead-success-link:hover { color: var(--accent); gap: 12px; }
+
     body.modal-open { overflow: hidden; }
-    @media (max-width: 480px) {
-      .lead-modal { padding: 28px 20px 24px; border-radius: 14px; }
-      .lead-modal-title { font-size: 22px; }
+    @media (max-width: 540px) {
+      .lead-modal { padding: 28px 22px 24px; }
+      .lead-modal-title { font-size: 24px; max-width: 100%; }
+      .lead-modal-tag::before { width: 14px; }
+      .lead-field { grid-template-columns: 22px 1fr; column-gap: 10px; }
+      .lead-field-num { font-size: 10px; padding-bottom: 8px; }
+      .lead-field-label { font-size: 10px; }
+      .lead-field input, .lead-field textarea { font-size: 14px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .lead-modal, .lead-field, .lead-modal-overlay { transition: opacity 0.2s ease; transform: none !important; }
+      .lead-modal-overlay.open .lead-field { transition-delay: 0s !important; }
     }
   </style>
   <script>
@@ -2285,59 +2443,89 @@
     </div>
   </footer>
 
-  <!-- ===== LEAD CAPTURE MODAL ===== -->
+  <!-- ===== LEAD CAPTURE MODAL — Editorial Concierge ===== -->
   <div class="lead-modal-overlay" id="leadModal" role="dialog" aria-modal="true" aria-labelledby="leadModalTitle" aria-hidden="true">
     <div class="lead-modal">
-      <button class="lead-modal-close" type="button" aria-label="Close">
-        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M18 6l-12 12"/></svg>
-      </button>
+
+      <div class="lead-modal-header">
+        <span class="lead-modal-tag">Systems Audit · Free</span>
+        <button class="lead-modal-close" type="button" aria-label="Close">Close</button>
+      </div>
 
       <div data-view="form">
-        <div class="lead-modal-eyebrow">Systems Audit — Free</div>
-        <h3 class="lead-modal-title" id="leadModalTitle">Tell us where you're stuck.</h3>
-        <p class="lead-modal-sub">30 minutes. You'll leave with your top 3 AI opportunities ranked by ROI and a 4-week plan for the first one.</p>
+        <div class="lead-modal-kicker">A 30-minute conversation.</div>
+        <h3 class="lead-modal-title" id="leadModalTitle">Tell us where <em>you're stuck.</em></h3>
+        <p class="lead-modal-sub">Four questions. Then we'll talk — and you'll leave with your top 3 AI opportunities ranked by ROI and a 4-week plan for the first one.</p>
 
-        <form class="lead-form" novalidate>
+        <div class="lead-modal-rule"></div>
+
+        <form class="lead-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
+          <input type="hidden" name="access_key" value="e6107727-57be-4b54-82a6-8ac3529864aa">
+          <input type="hidden" name="subject" value="New Systems Audit request — ROMANALABS">
+          <input type="hidden" name="from_name" value="ROMANALABS Website">
+
           <div class="lead-field">
-            <label for="lf-name">Your name</label>
-            <input type="text" id="lf-name" name="name" placeholder="Jane Smith" required autocomplete="name">
-          </div>
-          <div class="lead-field">
-            <label for="lf-email">Work email</label>
-            <input type="email" id="lf-email" name="email" placeholder="jane@company.com" required autocomplete="email">
-          </div>
-          <div class="lead-field">
-            <label for="lf-company">Company &amp; role</label>
-            <input type="text" id="lf-company" name="company_role" placeholder="Acme Inc — Head of Ops" required autocomplete="organization">
-          </div>
-          <div class="lead-field">
-            <label for="lf-bottleneck">What's your biggest bottleneck?</label>
-            <textarea id="lf-bottleneck" name="bottleneck" placeholder="One line is fine — e.g. 'manual lead qualification eats 40 hrs/wk'" required></textarea>
+            <span class="lead-field-num">01</span>
+            <div class="lead-field-body">
+              <label class="lead-field-label" for="lf-name">Your name</label>
+              <input type="text" id="lf-name" name="name" placeholder="Jane Smith" required autocomplete="name">
+            </div>
           </div>
 
-          <!-- Honeypot anti-spam (hidden from real users) -->
-          <input type="text" name="botcatch" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
+          <div class="lead-field">
+            <span class="lead-field-num">02</span>
+            <div class="lead-field-body">
+              <label class="lead-field-label" for="lf-email">Work email</label>
+              <input type="email" id="lf-email" name="email" placeholder="jane@company.com" required autocomplete="email">
+            </div>
+          </div>
+
+          <div class="lead-field">
+            <span class="lead-field-num">03</span>
+            <div class="lead-field-body">
+              <label class="lead-field-label" for="lf-company">Company &amp; role</label>
+              <input type="text" id="lf-company" name="company_role" placeholder="Acme Inc — Head of Ops" required autocomplete="organization">
+            </div>
+          </div>
+
+          <div class="lead-field">
+            <span class="lead-field-num">04</span>
+            <div class="lead-field-body">
+              <label class="lead-field-label" for="lf-bottleneck">The bottleneck</label>
+              <textarea id="lf-bottleneck" name="message" rows="1" placeholder="e.g. 'manual lead qualification eats 40 hrs a week.'" required></textarea>
+            </div>
+          </div>
+
+          <!-- Honeypot anti-spam -->
+          <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
 
           <div class="lead-error" role="alert" aria-live="polite"></div>
 
-          <button type="submit" class="lead-submit">
-            Send &amp; book a time
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
+          <div class="lead-modal-foot">
+            <button type="submit" class="lead-submit">
+              Send &amp; open the calendar
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
 
-          <p class="lead-secondary">Prefer to skip? <a href="https://cal.com/omar-flores/discovery" target="_blank" rel="noopener">Book directly →</a></p>
+            <div class="lead-alt">
+              Already sure? <a href="https://cal.com/omar-flores/discovery" target="_blank" rel="noopener">Book directly</a>
+            </div>
+          </div>
         </form>
       </div>
 
       <div data-view="success" style="display:none;">
         <div class="lead-success">
-          <div class="lead-success-icon">
-            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-          </div>
-          <h3 class="lead-modal-title" style="font-size:22px;">Got it. Opening the calendar…</h3>
-          <p class="lead-modal-sub" style="margin-bottom:0;">If the booking tab didn't open, <a href="https://cal.com/omar-flores/discovery" target="_blank" rel="noopener" style="color:var(--emerald);font-weight:600;">click here</a>.</p>
+          <div class="lead-success-num">— Received —</div>
+          <h3 class="lead-success-title">Got it. Pick a <em>time.</em></h3>
+          <p class="lead-success-body">We're opening the calendar in a new tab. If your browser blocked it, use the link below — see you in 30 minutes.</p>
+          <a class="lead-success-link" href="https://cal.com/omar-flores/discovery" target="_blank" rel="noopener">
+            Open the calendar
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -2695,10 +2883,8 @@
       }, { passive: true });
     })();
 
-    // ===== Lead-capture Modal =====
+    // ===== Lead-capture Modal — Editorial Concierge =====
     (function() {
-      // ⚠️ SWAP THIS — get a free access key at https://web3forms.com (takes 30 seconds, email-verified)
-      var WEB3FORMS_ACCESS_KEY = 'REPLACE_WITH_YOUR_WEB3FORMS_KEY';
       var CAL_URL = 'https://cal.com/omar-flores/discovery';
 
       var overlay = document.getElementById('leadModal');
@@ -2708,25 +2894,31 @@
       var successView = overlay.querySelector('[data-view="success"]');
       var errorEl = overlay.querySelector('.lead-error');
       var submitBtn = overlay.querySelector('.lead-submit');
+      var submitBtnHTML = submitBtn.innerHTML;
       var closeBtn = overlay.querySelector('.lead-modal-close');
+      var fields = Array.from(overlay.querySelectorAll('.lead-field'));
+      var inputs = Array.from(overlay.querySelectorAll('.lead-field input, .lead-field textarea'));
+      var textarea = overlay.querySelector('textarea');
       var lastFocus = null;
 
       function openModal(e) {
         if (e) { e.preventDefault(); e.stopPropagation(); }
         lastFocus = document.activeElement;
         overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden', 'false');
         document.body.classList.add('modal-open');
-        // Reset views
         formView.style.display = '';
         successView.style.display = 'none';
         errorEl.textContent = '';
+        // Focus first field after the entrance animation has cleared
         setTimeout(function() {
-          var first = form.querySelector('input, textarea');
-          if (first) first.focus();
-        }, 250);
+          var first = form.querySelector('input:not([type=hidden]):not([name=botcheck]), textarea');
+          if (first) first.focus({ preventScroll: true });
+        }, 320);
       }
       function closeModal() {
         overlay.classList.remove('open');
+        overlay.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('modal-open');
         if (lastFocus && lastFocus.focus) lastFocus.focus();
       }
@@ -2744,41 +2936,78 @@
         if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
       });
 
+      // Field-number color flip when populated
+      inputs.forEach(function(input) {
+        input.addEventListener('input', function() {
+          var field = input.closest('.lead-field');
+          if (!field) return;
+          field.classList.toggle('has-value', input.value.trim().length > 0);
+        });
+      });
+
+      // Textarea auto-grow
+      if (textarea) {
+        function autosize() {
+          textarea.style.height = 'auto';
+          textarea.style.height = Math.min(textarea.scrollHeight, 160) + 'px';
+        }
+        textarea.addEventListener('input', autosize);
+        // Reset on open
+        var origOpen = openModal;
+      }
+
+      // Focus trap (simple): keep tab cycling inside the modal
+      overlay.addEventListener('keydown', function(e) {
+        if (e.key !== 'Tab') return;
+        var focusables = overlay.querySelectorAll(
+          'button, [href], input:not([type=hidden]):not([style*="-9999"]), textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (!focusables.length) return;
+        var first = focusables[0];
+        var last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault(); last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault(); first.focus();
+        }
+      });
+
       form.addEventListener('submit', function(e) {
         e.preventDefault();
         errorEl.textContent = '';
 
-        var data = new FormData(form);
-        data.append('access_key', WEB3FORMS_ACCESS_KEY);
-        data.append('subject', 'New Systems Audit request — ' + (data.get('name') || 'unnamed'));
-        data.append('from_name', 'ROMANALABS Website');
+        // Honeypot
+        if (form.botcheck && form.botcheck.checked) return;
 
-        // Honeypot check (botcatch field)
-        if (data.get('botcatch')) return;
-
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Sending…';
-
-        // If key isn't configured, skip the request and just redirect (graceful pre-launch)
-        if (!WEB3FORMS_ACCESS_KEY || WEB3FORMS_ACCESS_KEY === 'REPLACE_WITH_YOUR_WEB3FORMS_KEY') {
-          console.warn('Web3Forms key not set — skipping submission, redirecting to cal.com');
-          showSuccessAndRedirect();
+        // Native validity check
+        if (!form.checkValidity()) {
+          errorEl.textContent = 'Please fill every field — it only takes a moment.';
+          form.reportValidity();
           return;
         }
 
-        fetch('https://api.web3forms.com/submit', { method: 'POST', body: data })
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Sending…';
+
+        var data = new FormData(form);
+
+        fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        })
           .then(function(r) { return r.json(); })
           .then(function(res) {
-            if (res.success) {
+            if (res && res.success) {
               showSuccessAndRedirect();
             } else {
-              throw new Error(res.message || 'Submission failed');
+              throw new Error((res && res.message) || 'Submission failed');
             }
           })
           .catch(function(err) {
             errorEl.textContent = 'Something went wrong. Please try again or book directly below.';
             submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Send & book a time <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+            submitBtn.innerHTML = submitBtnHTML;
             console.error(err);
           });
       });
@@ -2786,10 +3015,18 @@
       function showSuccessAndRedirect() {
         formView.style.display = 'none';
         successView.style.display = '';
-        // Open cal.com in a new tab after a beat so user sees confirmation
+        // Open cal.com in a new tab after a brief moment so the user sees confirmation
         setTimeout(function() {
           window.open(CAL_URL, '_blank', 'noopener');
         }, 900);
+        // Reset for next time
+        setTimeout(function() {
+          form.reset();
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = submitBtnHTML;
+          fields.forEach(function(f) { f.classList.remove('has-value'); });
+          if (textarea) textarea.style.height = '';
+        }, 1500);
       }
     })();
 

@@ -4,10 +4,13 @@
   "description": "ROMANALABS marketing site",
   "main": "index.html",
   "scripts": {
-    "screenshot": "node screenshot.js"
+    "screenshot": "node screenshot.js",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
   "devDependencies": {
-    "puppeteer": "^24.37.5"
+    "puppeteer": "^24.37.5",
+    "wrangler": "^4.93.0"
   },
   "type": "commonjs"
 }

@@ -19,3 +19,8 @@ nul
 # Binaries that should never be in a static-site repo
 tailwind.exe.exe
 *.exe
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example

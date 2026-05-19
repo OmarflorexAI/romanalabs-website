@@ -219,99 +219,24 @@
     })();
 
 
-    // ===== Process Sticky Scroll (continuous scroll-linked) =====
+    // ===== Process Section — IntersectionObserver reveal (no scroll-jack) =====
     (function() {
-      var outer = document.getElementById('processStickyOuter');
-      if (!outer) return;
-
-      var navItems = Array.from(document.querySelectorAll('.pss-nav-item'));
       var panels = Array.from(document.querySelectorAll('.pss-panel'));
-      var trackFill = document.getElementById('pssTrackFill');
-      var currentStep = -1;
-      var ticking = false;
+      if (panels.length === 0) return;
 
-      function updateNav(step) {
-        if (step === currentStep) return;
-        currentStep = step;
-        navItems.forEach(function(item, i) {
-          item.classList.toggle('active', i === step);
-          item.classList.toggle('passed', i < step);
+      var io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('pss-visible');
+            io.unobserve(entry.target);
+          }
         });
-      }
+      }, {
+        threshold: 0.18,
+        rootMargin: '0px 0px -10% 0px'
+      });
 
-      function paint() {
-        ticking = false;
-        if (window.innerWidth <= 900) return;
-        if (panels.length === 0) return;
-
-        var rect = outer.getBoundingClientRect();
-        var scrollable = outer.offsetHeight - window.innerHeight;
-        if (scrollable <= 0) {
-          panels.forEach(function(p, i) {
-            p.style.opacity = i === 0 ? '1' : '0';
-            p.style.transform = i === 0 ? 'translateY(0)' : '';
-            p.style.pointerEvents = i === 0 ? 'auto' : 'none';
-          });
-          updateNav(0);
-          return;
-        }
-
-        var scrolled = -rect.top;
-        var progress = Math.max(0, Math.min(1, scrolled / scrollable));
-        // floatIdx ranges 0 .. panels.length-1
-        var floatIdx = progress * (panels.length - 1);
-        var activeStep = Math.max(0, Math.min(panels.length - 1, Math.round(floatIdx)));
-
-        updateNav(activeStep);
-
-        panels.forEach(function(panel, i) {
-          var dist = Math.abs(floatIdx - i);
-          // Each panel lingers fully (opacity 1) when within 0.35 of its index,
-          // crossfades between 0.35 and 0.75, fully gone past 0.75.
-          var opacity;
-          if (dist < 0.35) opacity = 1;
-          else if (dist > 0.75) opacity = 0;
-          else opacity = 1 - (dist - 0.35) / 0.4;
-
-          // Slide: panel comes from below (+22px) when upcoming, goes up (-22px) when passed
-          var slide = (i - floatIdx) * 22;
-
-          panel.style.opacity = opacity.toFixed(3);
-          panel.style.transform = 'translateY(' + slide.toFixed(1) + 'px)';
-          panel.style.pointerEvents = opacity > 0.5 ? 'auto' : 'none';
-        });
-
-        if (trackFill && navItems.length > 1) {
-          trackFill.style.height = (progress * 100) + '%';
-        }
-      }
-
-      function onScroll() {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(paint);
-      }
-
-      // Init
-      if (window.innerWidth <= 900) {
-        // Mobile: reveal each panel as it scrolls into view
-        var mobileIO = new IntersectionObserver(function(entries) {
-          entries.forEach(function(e) {
-            if (e.isIntersecting) {
-              e.target.classList.add('pss-visible');
-              mobileIO.unobserve(e.target);
-            }
-          });
-        }, { threshold: 0.12, rootMargin: '0px 0px -20px 0px' });
-        panels.forEach(function(p) { mobileIO.observe(p); });
-      } else {
-        paint();
-      }
-
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', function() {
-        if (window.innerWidth > 900) onScroll();
-      }, { passive: true });
+      panels.forEach(function(p) { io.observe(p); });
     })();
 
     // ===== Lead-capture Modal — Editorial Concierge =====

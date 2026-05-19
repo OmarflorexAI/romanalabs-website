@@ -8,6 +8,8 @@ const puppeteer = require('puppeteer');
   async function revealAll(pg) {
     await pg.evaluate(() => {
       document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => el.classList.add('visible'));
+      // Reveal process panels (IntersectionObserver doesn't fire in fullPage capture)
+      document.querySelectorAll('.pss-panel').forEach(el => el.classList.add('pss-visible'));
       // Reveal process groups and display cards
       document.querySelectorAll('.process-group').forEach(el => {
         el.style.opacity = '1';

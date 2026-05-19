@@ -1215,85 +1215,101 @@
     }
     .footer-link:hover { color: var(--text-primary); }
 
-    /* ===== Process Sticky Scroll ===== */
-    .pss-outer { height: 140vh; position: relative; }
-    .pss-sticky {
-      position: sticky; top: 72px; /* offset for fixed header */
-      min-height: calc(100vh - 72px);
-      display: grid; grid-template-columns: 300px 1fr;
-      gap: 100px; align-content: center; align-items: center;
-      padding: 0;
-    }
-    .pss-nav { position: relative; display: flex; flex-direction: column; }
-    .pss-track {
-      position: absolute; left: 0; top: 4px; bottom: 4px;
-      width: 0.5px; background: rgba(18,18,18,0.1); overflow: hidden;
-    }
-    .pss-track-fill {
-      position: absolute; left: 0; top: 0; right: 0;
-      height: 0%; background: var(--accent); transition: height 0.2s linear;
-    }
-    .pss-nav-item {
-      display: flex; gap: 18px; padding: 24px 0 24px 28px;
-      opacity: 0.28; transition: opacity 0.4s ease;
-      cursor: default; position: relative;
-    }
-    .pss-nav-item.active { opacity: 1; }
-    .pss-nav-item.passed { opacity: 0.55; }
-    .pss-nav-dot {
-      position: absolute; left: -5px; top: 28px;
-      width: 10px; height: 10px; border-radius: 50%;
-      border: 0.5px solid rgba(18,18,18,0.2); background: var(--bg-primary);
-      transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-    .pss-nav-item.active .pss-nav-dot {
-      background: var(--accent); border-color: var(--accent);
-      box-shadow: 0 0 0 4px rgba(212,175,55,0.18);
-    }
-    .pss-nav-item.passed .pss-nav-dot { background: var(--accent); border-color: var(--accent); }
-    .pss-nav-num {
-      font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 700;
-      color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase;
-      padding-top: 2px; flex-shrink: 0; transition: color 0.3s ease;
-    }
-    .pss-nav-item.active .pss-nav-num { color: var(--accent); }
-    .pss-nav-title { font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
-    .pss-nav-tagline { font-size: 13px; color: var(--text-muted); margin-top: 4px; font-style: italic; }
-    .pss-detail { position: relative; min-height: 540px; }
+    /* ===== Process Section — vertical timeline (no scroll-jack) ===== */
+    .pss-outer { position: relative; }
+    .pss-sticky { display: block; max-width: 920px; margin: 0 auto; }
+
+    /* The old sticky-scroll sidebar is no longer used. Hide its markup. */
+    .pss-nav { display: none; }
+
+    .pss-detail { position: relative; }
+
+    /* Each panel: a vertical timeline item with a gold step-dot on the left */
     .pss-panel {
-      position: absolute; top: 0; left: 0; right: 0;
-      opacity: 0; pointer-events: none;
-      transform: translateY(28px);
-      /* Tight smoothing — JS drives values per frame so transitions stay short */
+      position: relative;
+      opacity: 0;
+      transform: translateY(32px);
+      pointer-events: auto;
+      padding-left: 56px;
+      padding-bottom: 96px;
       transition:
-        opacity 0.18s linear,
-        transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
-      will-change: opacity, transform;
+        opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .pss-panel.active {
-      opacity: 1; pointer-events: auto;
+    .pss-panel:last-child { padding-bottom: 0; }
+
+    /* Step dot */
+    .pss-panel::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 6px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(27, 67, 50, 0.18);
+      background: var(--bg-primary);
+      z-index: 1;
+      transition:
+        border-color 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+        background 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    /* Connecting line to next panel */
+    .pss-panel:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 10px; top: 34px;
+      bottom: 24px;
+      width: 1.5px;
+      background: linear-gradient(to bottom, rgba(27, 67, 50, 0.16) 0%, rgba(27, 67, 50, 0.04) 100%);
+    }
+
+    /* Revealed state — IntersectionObserver adds this class */
+    .pss-panel.pss-visible {
+      opacity: 1;
       transform: translateY(0);
     }
-    /* Panel inner: content left, art right */
+    .pss-panel.pss-visible::before {
+      border-color: var(--accent);
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(212, 175, 55, 0.14);
+    }
+
+    /* Panel inner — content on the left, art on the right at desktop */
     .pss-panel-inner {
-      display: grid; grid-template-columns: 1fr minmax(200px, 280px);
-      gap: 48px; align-items: center;
+      display: grid;
+      grid-template-columns: 1fr minmax(180px, 240px);
+      gap: 56px;
+      align-items: center;
     }
     .pss-panel-content { min-width: 0; }
     .pss-panel-art {
       display: flex; align-items: center; justify-content: center;
-      color: var(--text-muted); opacity: 0.75;
+      color: var(--text-muted); opacity: 0.65;
     }
-    .pss-art-svg { width: 100%; height: auto; max-width: 280px; }
+    .pss-art-svg { width: 100%; height: auto; max-width: 240px; }
+
     .pss-step-label {
-      display: block; font-size: 11px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.16em;
-      color: var(--accent); margin-bottom: 14px; font-family: 'Inter', sans-serif;
+      display: block;
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.18em;
+      color: var(--accent);
+      margin-bottom: 14px;
+      font-family: 'Inter', sans-serif;
     }
     .pss-panel-title {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(32px, 3.6vw, 46px); font-weight: 700;
-      color: var(--text-primary); letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 10px;
+      font-size: clamp(28px, 3.2vw, 40px); font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.025em; line-height: 1.05;
+      margin-bottom: 10px;
+    }
+    .pss-panel-tag {
+      display: inline-block;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px; font-weight: 500;
+      color: var(--emerald);
+      font-style: italic;
+      margin-bottom: 24px;
     }
     .pss-panel-tagline {
       font-family: 'Space Grotesk', sans-serif; font-size: 17px;
@@ -1301,17 +1317,11 @@
     }
     .pss-panel-desc {
       font-size: 16px; line-height: 1.8; color: var(--text-secondary);
-      margin-bottom: 32px;
+      margin-bottom: 28px;
     }
     .pss-panel-pills { display: flex; flex-wrap: wrap; gap: 8px; }
-    .pss-panel-tag {
-      display: inline-block;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 16px; font-weight: 500;
-      color: var(--emerald); font-style: italic;
-      margin-bottom: 22px;
-    }
-    .pss-bullets { list-style: none; padding: 0; margin: 0 0 8px; }
+
+    .pss-bullets { list-style: none; padding: 0; margin: 0; }
     .pss-bullets li {
       position: relative;
       padding-left: 26px;
@@ -1329,63 +1339,19 @@
       background: var(--accent);
       border-radius: 1px;
     }
-    /* Mobile — vertical timeline with scroll-triggered reveal */
-    @media (max-width: 900px) {
-      .pss-outer { height: auto; }
-      .pss-sticky { position: static; display: block; min-height: 0; padding: 0; }
-      .pss-nav { display: none; }
-      .pss-detail { min-height: 0; position: static; }
-      /* Each panel: position relative so ::before/::after work */
-      .pss-panel {
-        position: relative;
-        opacity: 0;
-        transform: translateY(28px);
-        filter: none;
-        pointer-events: auto;
-        padding-left: 40px;
-        padding-bottom: 56px;
-        margin-bottom: 0;
-        border-bottom: none;
-        transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1);
-      }
-      .pss-panel:last-child { padding-bottom: 0; }
-      /* Step dot */
-      .pss-panel::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 4px;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        border: 1.5px solid rgba(27,67,50,0.15);
-        background: var(--bg-primary);
-        z-index: 1;
-        transition: border-color 0.5s ease, background 0.5s ease, box-shadow 0.5s ease;
-      }
-      /* Connecting line to next panel */
-      .pss-panel:not(:last-child)::after {
-        content: '';
-        position: absolute;
-        left: 9px;
-        top: 28px;
-        bottom: 0;
-        width: 1.5px;
-        background: linear-gradient(to bottom, rgba(27,67,50,0.12) 0%, rgba(27,67,50,0.04) 100%);
-      }
-      /* Revealed state */
-      .pss-panel.pss-visible {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      .pss-panel.pss-visible::before {
-        border-color: var(--emerald);
-        background: rgba(27,67,50,0.1);
-        box-shadow: 0 0 0 4px rgba(27,67,50,0.06);
-      }
-      .pss-panel-inner { grid-template-columns: 1fr; gap: 24px; }
+
+    /* Tablet/mobile — collapse the art column under the content */
+    @media (max-width: 760px) {
+      .pss-panel-inner { grid-template-columns: 1fr; gap: 28px; }
       .pss-panel-art { justify-content: flex-start; }
       .pss-art-svg { max-width: 180px; }
+      .pss-panel { padding-left: 40px; padding-bottom: 64px; }
+      .pss-panel::before { width: 18px; height: 18px; }
+      .pss-panel:not(:last-child)::after { left: 8px; top: 28px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .pss-panel, .pss-panel::before { transition: none !important; }
+      .pss-panel { opacity: 1; transform: none; }
     }
     /* Shared pill styles */
     .lp-pill {

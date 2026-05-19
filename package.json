@@ -4,17 +4,10 @@
   "description": "ROMANALABS marketing site",
   "main": "index.html",
   "scripts": {
-    "build:css": "tailwindcss -i src/tailwind.in.css -o assets/tailwind.css --minify",
-    "build": "npm run build:css",
-    "watch:css": "tailwindcss -i src/tailwind.in.css -o assets/tailwind.css --watch",
     "screenshot": "node screenshot.js"
   },
-  "dependencies": {
-    "puppeteer": "^24.37.5"
-  },
   "devDependencies": {
-    "@tailwindcss/cli": "^4.3.0",
-    "tailwindcss": "^4.2.1"
+    "puppeteer": "^24.37.5"
   },
   "type": "commonjs"
 }

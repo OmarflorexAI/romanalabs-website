@@ -1,11 +1,11 @@
 # Progress Checkpoint
-> Last updated: 2026-05-19 (fourth update — post-revert of architecture overhaul) by context-checkpoint skill
-> Context usage at time of checkpoint: ~98%
+> Last updated: 2026-05-19 (fifth update — post-cleanup pass) by context-checkpoint skill
+> Context usage at time of checkpoint: ~99%
 
 ## Project Overview
-ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\Users\admin\website-romanalabs\`. Pure HTML/CSS/JS, no backend, no database, no auth. **Hosted on GitHub Pages** (despite the legacy `_headers` and `netlify.toml` files in the repo — both are dead code; GH Pages doesn't read them). Domain `romanalabs.com` via Cloudflare DNS/proxy in front of GH Pages. Form submissions go to Web3Forms (third-party).
+ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\Users\admin\website-romanalabs\`. Pure HTML/CSS/JS, no backend, no database, no auth. **Hosted on GitHub Pages** with Cloudflare DNS/proxy in front. Domain `romanalabs.com`. Form submissions go to Web3Forms (third-party). The site is on the pre-overhaul setup: Tailwind via CDN runtime + all CSS inline in `<style>` blocks + all JS inline in `<script>` blocks + a single shared `assets/site.css` for brand tokens and footer styles.
 
-**CRITICAL ARCHITECTURE NOTE (post-revert):** The site is back to the **pre-overhaul setup**: Tailwind via CDN runtime + all CSS inline in `<style>` blocks + all JS inline in `<script>` blocks. The architecture overhaul (`ea9e2ac`) that externalized everything was reverted in `bc23e51` per user direction because the pre-built `assets/tailwind.css` was missing utility classes the CDN's JIT generated at runtime, which broke the visual layout in production.
+**ARCHITECTURE LESSON FROM THIS SESSION (don't repeat):** The architecture overhaul (`ea9e2ac`) that externalized inline CSS/JS and pre-built Tailwind broke the production visual because the static build was missing utilities the JIT generated at runtime. Reverted in `bc23e51`. The Tailwind CDN console warning is accepted as the cost of keeping the design working.
 
 ## What Has Been Accomplished
 
@@ -152,43 +152,68 @@ ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\U
 
 31. **Final-CTA button fix** (folded into `209250c`): the "Book a Systems Audit" button in the dark final CTA box had `px-7 py-3.5 rounded-lg` (small rectangle); changed to `px-8 py-4 rounded-full` (pill, matching all other CTAs on the page). Visible improvement.
 
+### Session 5 (2026-05-19) — Full review + cleanup pass
+
+32. **Code review pass** — examined entire codebase. No critical issues. Identified 10 categories of cleanup: placeholder links, honeypot a11y, orphan files, dead config, dormant modal, stale docs, dependency audit. Presented findings to user as review (not actions). User said "let's do it, begin."
+
+33. **Honeypot a11y fix** (`f50a365`): added `aria-hidden="true"` + `pointer-events:none` to the `name="botcheck"` checkbox in both `index.html:2460` and `contact/index.html:542`. Screen readers no longer announce the trap field. Closes audit finding #9.4.
+
+34. **Orphan files deleted** (`f50a365`):
+    - Root: `nul` (Windows artifact, 100B), `README.md` (described reverted architecture), `_headers` + `netlify.toml` (dead config — GH Pages doesn't read them)
+    - `brand_assets/`: `everest logo.png`, `everest_svg.svg` (leftover from different project name), `romanlabslogo (2).png` (PNG variant not used; site uses SVG), `Gemini_Generated_Image_f19eoqf19eoqf19e.png` (reference image cited only in stale Claude rule). Saved ~200-400KB per deploy.
+
+35. **Stale docs refreshed** (`f50a365`):
+    - `CLAUDE.md` rewritten to describe the CURRENT (post-revert) architecture — no more references to externalized assets / build scripts / pre-built Tailwind. Added "Behavioral rules (HARD CONSTRAINTS)" section quoting user feedback.
+    - `.claude/rules/brand-identity.md` refreshed: old palette `#4A9FE5` replaced with Midnight Emerald & Alabaster tokens. Logo path corrected (was pointing at deleted PNG). Fonts updated to Space Grotesk + Inter.
+
+36. **Footer dead legal links removed** (`8400c2c`): Privacy Policy / Terms of Service / Cookies — all 3 had `href="#"` placeholders. User chose "remove them (cleanest)". Footer bottom row now contains only the copyright line.
+    - X / Twitter social icon (also `href="#"`) — kept as-is per user direction; they will come back with a real URL.
+
+37. **Dormant lead-capture modal DELETED** (`8400c2c`): user chose "Delete it entirely (Recommended)" from the modal-fate question. Surgically removed from `index.html`:
+    - CSS block: ~285 lines (lines 1445-1729) of `.lead-modal-*`, `.lead-form`, `.lead-field`, `.check-card`, `.lead-submit`, etc.
+    - HTML block: ~85 lines (the `<div id="leadModal">` overlay + form + success view)
+    - JS block: ~148 lines (the IIFE managing open/close/submit/honeypot/focus-trap + cal.com link interceptor)
+    - Total: 21,392 chars removed. index.html: 2961 → 2437 lines. Zero remaining references to `leadModal`/`lead-modal`/`openModal`/`CAL_URL`.
+    - Verified via screenshot.js — no visual regressions (modal was dormant, had no UI surface).
+
 ## Current State
 - **Branch:** `main`, fully pushed to `origin/main` (clean working tree).
-- **Latest commit:** `bc23e51` — Revert the architecture overhaul (restored pre-`ea9e2ac` state)
-- **Hosting:** GitHub Pages with Cloudflare as DNS/proxy. Verified via response headers (`x-github-request-id`, `via: 1.1 varnish` from Fastly).
-- **Architecture (current = pre-overhaul):**
-  - index.html: ~2900 lines, all CSS/JS inline
-  - contact/index.html: ~720 lines, all CSS/JS inline
-  - assets/site.css: shared brand tokens + footer styles (kept from `a6ee392`)
-  - Tailwind via CDN runtime — produces a console warning about production use; intentional, accept to keep design working
-  - No `assets/main.css`, `assets/main.js`, `assets/contact.css`, `assets/contact.js`, `assets/tailwind.css`, `src/`, `README.md` after revert
-- **GitHub PATs:** Both leaked PATs revoked in dashboard 2026-05-19 (`ghp_FUb5Ya…oTkQ` and `ghp_66t3OU…WwM01`). Remote URL no longer contains a token. Pushes work without interactive prompt — Git is using a cached credential (likely Windows Credential Manager from a prior `gh` CLI session).
+- **Latest commit:** `8400c2c` — Delete dormant lead-capture modal + dead footer legal links
+- **Previous commits this session:** `f50a365` (honeypot a11y + orphan cleanup + stale docs refresh), `c2a0b22` (Session 4 checkpoint), `bc23e51` (architecture overhaul revert)
+- **Hosting:** GitHub Pages with Cloudflare as DNS/proxy.
+- **Architecture (post-revert + cleanup):**
+  - `index.html`: 2437 lines (down from 2961 after modal deletion), all CSS/JS inline + Tailwind CDN
+  - `contact/index.html`: 711 lines, all CSS/JS inline + Tailwind CDN
+  - `assets/site.css`: 133 lines — the ONLY external CSS file. Shared brand tokens (:root) + footer styles.
+  - No `_headers`, `netlify.toml`, `README.md`, `nul` in repo anymore (deleted).
+  - `brand_assets/` cleaned: removed 4 unreferenced files (~200-400KB saved per deploy).
+- **GitHub PATs:** Both leaked PATs revoked. Remote URL has no token. Pushes work via cached credential.
 - **Form is LIVE** on `romanalabs.com/contact/` — submissions reach Web3Forms inbox.
-- **Cache-busting query strings (`?v=4`)** are appended to all CSS/JS references in HTML. Bump to `?v=5` on next CSS edit to force browser refetch (this is the only way to defeat the GH Pages default cache).
-- **_headers and netlify.toml exist but are DEAD CODE** — GH Pages doesn't read them. The CSP, cache-control, and security headers configured there are not actually applied in production. Site has no custom CSP / cache headers — only GH Pages defaults (`max-age=600`).
+- **Cache-busting query strings (`?v=4`)** are on all asset URLs in HTML. Bump to `?v=5` on next external-file edit (current changes were inline HTML attributes, no bump needed).
+- **No CSP / custom cache headers in production** — GH Pages serves with its own defaults (`max-age=600`). The `_headers` file has been deleted (was dead code anyway).
 - **Local working tree:** clean.
 
 ## What Comes Next
 
-### Immediate — user verification
+### Dashboard-only (user's hands)
 
-1. **User to verify the reverted site looks RIGHT** — open https://romanalabs.com in incognito (or hard-refresh) and confirm it looks "premium" like before the architecture overhaul. If still bad, the user will point at the specific element rather than describing it as "the entire site". Do not make any further changes without explicit element-level direction.
+1. **Web3Forms hardening** (Audit Finding #2, ~5 min): in https://web3forms.com dashboard, set Allowed Domains = `romanalabs.com` + `localhost`. Enable hCaptcha. The access key is publicly visible in client HTML by design; without these guards, spammers can scrape it and abuse the form.
+2. **Slack webhook / Google Sheet sync** on Web3Forms — 2-min dashboard setup for real-time lead notifications.
 
-### Remaining ⚠️ minor security audit findings (only if user confirms revert is good)
+### Quick local fixes (Claude can do)
 
-2. **Web3Forms hardening** (Finding #2, ~5 min, **DASHBOARD-ONLY**): in https://web3forms.com dashboard, set Allowed Domains = `romanalabs.com` + `localhost`. Enable hCaptcha. Web3Forms key is in client HTML by design but spammers can scrape it without these guards.
-3. **Honeypot a11y fix** (Finding #9.4, ~1 min): add `aria-hidden="true"` and `pointer-events:none` to the `name="botcheck"` checkbox in `contact/index.html` and `index.html`. **Touch only those two attribute additions — no other changes to surrounding markup.**
-4. **`npm audit fix`** (Finding #5.1, ~2 min): 3 vulns in puppeteer transitive deps (basic-ftp HIGH, ip-address MOD, ws MOD). Local-dev-only — never ships to production.
-5. **Delete `netlify.toml` + `nul` orphan files** (Finding #9.6, ~1 min). These are dead code anyway.
-6. **Decision: dormant lead-capture modal in `index.html`** (Finding #9.3): still in the inline `<style>` and `<script>` blocks, no CTA triggers it. Ask the user before either deleting it or restoring it as the lead surface (replacing /contact).
-7. **Optional: self-host fonts** (Finding #9.5, ~30 min): replace Google Fonts CDN with locally-hosted `.woff2`. Eliminates the only remaining third-party CSS dependency.
+3. **`npm audit fix`** (Audit Finding #5.1, ~2 min): 3 vulns in puppeteer transitive deps (basic-ftp HIGH, ip-address MOD, ws MOD). Dev-only — never ships. Just hygiene.
+4. **Decide on X/Twitter footer icon**: user said they have an X handle to come back with. Until they do, the icon's `href="#"` is the only remaining dead link on the site. (Index footer ~line 2381, contact ~line 592.)
+5. **Optional: self-host fonts** (Audit Finding #9.5, ~30 min): replace the Google Fonts CDN `<link>` with locally-hosted `.woff2` files in `/brand_assets/fonts/` (or `/assets/fonts/`). Eliminates the only remaining third-party CSS dependency. Trade-off: ~50KB more in repo, but no third-party request.
 
-### Open product-side follow-ups
+### Product / content (need user input)
 
-8. **Real testimonials** for case-study cards — Lovable playbook flags vague social proof as #1 conversion killer. Don't fabricate; ask user for real names/photos/titles.
-9. **Verify compliance badges** (SOC 2 Type II / ISO 27001 / GDPR / Zero-Knowledge Infra on the security section). Remove any that aren't actually held.
-10. **Slack webhook / Google Sheet sync** on Web3Forms — 2-min dashboard setup for real-time lead notifications.
-11. **Optionally: migrate to actual Cloudflare Pages** if user wants the `_headers` file to work (CSP, cache-control). Currently the file is in the repo but ignored. Either delete it (dead code) or set up Cloudflare Pages properly and decommission GitHub Pages.
+6. **Real testimonials** for case-study cards — Lovable playbook flags vague social proof as #1 conversion killer. Don't fabricate. Ask user for real names, photos, titles before adding to the page.
+7. **Verify compliance badges** (SOC 2 Type II / ISO 27001 / GDPR / Zero-Knowledge Infra in the security section). Remove any that aren't actually held. False trust signals hurt when verified.
+
+### Platform decision (optional)
+
+8. **Migrate to actual Cloudflare Pages** — if you want headers (CSP, cache-control) to actually apply. Currently the site is GitHub Pages and headers files don't work. Either accept GH Pages permanently or migrate; both are valid. No urgency.
 
 ## Active Decisions & Context
 
@@ -216,31 +241,41 @@ ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\U
 - **Security audit was performed in Session 3** — full findings in checkpoint history. 4 ❌ FAIL items addressed (CSP fix was dead code due to hosting platform mix-up; PAT rotation + lockfile commit are real fixes). Minor gaps remain in "What Comes Next" #2–7.
 
 ## Key Files
-- [index.html](index.html) — main page (~2900 lines): full inline `<style>` + `<script>` blocks. Loads Tailwind via CDN runtime. Contains hero, marquee, problem, case studies, scoreboard, process (sticky-scroll with 01/02/03 sidebar + panels), security, final CTA, footer + dormant lead-capture modal.
-- [contact/index.html](contact/index.html) — `/contact` page (~720 lines): full inline `<style>` + `<script>` blocks. 6-field Web3Forms-wired lead-capture form with editorial design.
-- [assets/site.css](assets/site.css) — the ONLY external CSS file. Shared brand tokens (`:root`) + footer styles. Loaded by both pages.
-- [package.json](package.json) — devDependencies: puppeteer (screenshot script). No build scripts (Tailwind compiles at runtime via CDN).
+- [index.html](index.html) — main page (~2437 lines after dormant-modal removal): full inline `<style>` + `<script>` blocks. Loads Tailwind via CDN runtime. Sections: hero, logo marquee, problem cards, case studies, scoreboard (stats + value props), process (sticky-scroll with 01/02/03 sidebar + panels), security, final CTA, footer.
+- [contact/index.html](contact/index.html) — `/contact` page (~711 lines): full inline `<style>` + `<script>` blocks. 6-field Web3Forms-wired lead-capture form with editorial design. Footer matches main site.
+- [assets/site.css](assets/site.css) — the ONLY external CSS file (~133 lines). Shared brand tokens (`:root`) + footer styles. Loaded by both pages.
+- [package.json](package.json) — devDependencies: puppeteer (screenshot script only). No build scripts.
 - [screenshot.js](screenshot.js) — Puppeteer dual-viewport (423px / 1440px) full-page screenshot tool. Includes `revealAll()` to expose scroll-triggered elements in static captures.
 - [CNAME](CNAME) — `romanalabs.com` (GitHub Pages custom domain marker).
-- [.gitignore](.gitignore) — excludes node_modules, screenshots, `.env*`, `tailwind.exe.exe`, `*.exe`.
-- [_headers](_headers), [netlify.toml](netlify.toml) — **dead code** (GH Pages doesn't read them). Candidate for deletion.
-- [CLAUDE.md](CLAUDE.md) + [.claude/CLAUDE.md](.claude/CLAUDE.md) + [.claude/rules/*.md](.claude/rules/) — project instructions and brand identity references. `.claude/rules/brand-identity.md` is stale (lists old palette `#4A9FE5`).
+- [.gitignore](.gitignore) — excludes node_modules, screenshots, `nul`, `.env*`, `tailwind.exe.exe`, `*.exe`, `.claude/`.
+- [CLAUDE.md](CLAUDE.md) — current-architecture docs + HARD CONSTRAINTS section. Refreshed in Session 5.
+- [.claude/CLAUDE.md](.claude/CLAUDE.md) + [.claude/rules/*.md](.claude/rules/) — Claude session rules. `.claude/rules/brand-identity.md` refreshed in Session 5 (current palette).
 - [progress.md](progress.md) — this file.
+
+**Deleted in Session 5 (don't re-create):** `_headers`, `netlify.toml`, `README.md`, `nul`, `brand_assets/everest logo.png`, `brand_assets/everest_svg.svg`, `brand_assets/romanlabslogo (2).png`, `brand_assets/Gemini_Generated_Image_f19eoqf19eoqf19e.png`.
 
 ## How to Resume
 
-**First thing:** read this whole file. The hardest-won lessons are in "Active Decisions & Context" — specifically the "Behavioral rules (HARD CONSTRAINTS)" section.
+**First thing:** read this whole file end-to-end. The hardest-won lessons are in "Active Decisions & Context" — specifically the "Behavioral rules (HARD CONSTRAINTS)" section.
 
 Then verify the current live state:
-- https://romanalabs.com → main site (incognito to bypass any browser cache)
+- https://romanalabs.com → main site (open in **incognito** to bypass any browser cache)
 - https://romanalabs.com/contact/ → lead-capture form
-- Confirm both look "premium" (large clean editorial typography, gold + emerald accents, proper spacing). If anything looks off, ask the user before changing — do not redesign on assumption.
+- Both pages should look clean and "premium" (large editorial typography, gold + emerald accents, generous spacing). The footer bottom row should show **only** the copyright text (legal links were removed in Session 5).
 
-If picking up new work:
-- **All site edits land in [index.html](index.html) (home) or [contact/index.html](contact/index.html) (form).** Both files have inline `<style>` and `<script>` blocks. Use Ctrl+F to navigate large files; don't externalize.
-- **Bump cache-bust `?v=N` whenever you change CSS or JS** (currently `?v=4`). This is the only reliable cache invalidation mechanism since GH Pages ignores our header config.
+If picking up new work, the priority queue is in "What Comes Next":
+1. Web3Forms domain allowlist + hCaptcha (dashboard-only, user's hands)
+2. `npm audit fix` (Claude can do)
+3. X/Twitter footer URL when user provides one
+4. Optional self-hosted fonts
+5. Real testimonials when user provides them
+6. Compliance badge verification
+
+Editing rules (DO NOT BREAK):
+- **All site edits land in [index.html](index.html) (home) or [contact/index.html](contact/index.html) (form).** Both files have inline `<style>` + `<script>` blocks. Use Ctrl+F to navigate; **do not externalize content**.
+- **Bump cache-bust `?v=N`** in `<link>` and `<script>` references **whenever you change `assets/site.css`**. Currently `?v=4`. For inline HTML/CSS/JS edits, no bump needed (HTML revalidates on each load).
 - Use `git -c http.version=HTTP/1.1 push origin main` to push (HTTP/2 stall workaround).
-- Brand tokens: accent `#D4AF37` (gold), emerald `#1B4332`, alabaster `#F9F9F7`, obsidian `#0A0D0B`. Display font Space Grotesk, body font Inter.
-- Don't fabricate testimonials, named clients, or compliance claims (SOC 2 / ISO 27001 / etc.). Always flag and ask.
+- Brand tokens (memorize these): accent `#D4AF37` (gold), emerald `#1B4332`, alabaster `#F9F9F7`, obsidian `#0A0D0B`. Display font Space Grotesk, body font Inter.
 - Cal.com link is always secondary, never a competing primary button.
+- Don't fabricate testimonials, named clients, or compliance claims. Always flag and ask.
 - **Do not make architectural changes without asking.** No externalization of inline content. No pre-built Tailwind. No "senior-engineer correct" sweeping refactors. The user wants targeted edits to specific elements they call out.

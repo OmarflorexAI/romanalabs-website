@@ -52,13 +52,20 @@ ROMANALABS marketing site — single-page AI consulting agency website at `c:\Us
     - Added centered page-header above the form: **"Let's *Connect.*"** (gold italic accent on "Connect") + sub "Tell us about your business and how we can help you scale with AI."
     - Layout now single centered column, max-width 640px (was 2-col 1180px grid).
     - 0.7s fade-up entrance for the header.
-    - Navigation back to home is via the slim dark footer (Home / Contact / LinkedIn).
+
+18. **Sticky navbar re-added to /contact** (`1df39e3`)
+    - Sticky top bar, alabaster bg with blur + thin bottom border, 68px tall (60px on mobile).
+    - **Left:** clickable brand lockup — logo mark + "ROMANALABS" wordmark, links to `../index.html`.
+    - **Right:** "← Back" pill button with subtle border; on hover, border turns gold, gap widens, arrow translates left.
+    - Both elements navigate back to home page.
+    - Main's top padding tightened (`64-120px` → `40-80px`) to compensate for the new bar.
 
 ## Current State
 - **Branch:** `main`, fully pushed to `origin/main` (clean working tree).
-- **Latest commit:** `7e835f2`
+- **Latest commit:** `1df39e3`
 - **Cloudflare Pages:** auto-deploys from `main`. Domain `romanalabs.com`. Verified `romanalabs.com/contact/` returns HTTP 200.
 - **Form is LIVE:** Web3Forms key wired in; submissions go to your inbox.
+- **GitHub auth:** PAT was rotated on 2026-05-19 — old token revoked, new one (`ghp_FUb5Ya…`) wired into the remote URL. **Recommended next step:** move it out of the URL into a credential helper or switch to SSH so it stops showing in `git remote -v` / shell history.
 - **Local working tree:** clean.
 
 ## What Comes Next
@@ -66,12 +73,11 @@ Nothing was left mid-task. Optional follow-ups:
 
 1. **Verify form submission end-to-end** — submit a test entry at `romanalabs.com/contact/` to confirm it lands in the configured Web3Forms inbox.
 2. **A/B decision: modal vs /contact page** — modal code is dormant but intact in `index.html`. If `/contact` underperforms in conversion, revert by find-replacing `href="contact/index.html"` → `href="https://cal.com/..."` in the 5 CTA spots (the modal interceptor will pick them back up).
-3. **Add back-to-home affordance on /contact** — currently only the footer. A small minimal logo or "← back" link in the top corner would help users not feel trapped.
-4. **Real testimonials** — case-study cards still lack named human + photo + title. Lovable conversion playbook flags this as the #1 social-proof killer.
-5. **Verify compliance badges** — SOC 2 Type II, ISO 27001, GDPR, Zero-Knowledge Infra on the security section. If any aren't actually held, remove them. False trust signals hurt when verified.
-6. **Sync modal with /contact form fields** — if you commit to keeping `/contact`, the dormant modal in `index.html` only has 4 fields (no goals checkbox grid, no optional context). Drop the modal entirely or backfill the new fields so revert stays viable.
-7. **Security hardening (repo):** `origin` URL still contains a GitHub PAT inline (`ghp_…@github.com/…`). Should be rotated and replaced with credential helper / SSH.
-8. **Slack webhook / Google Sheet sync** — Web3Forms supports both natively. ~2 min setup if you want real-time notifications beyond email.
+3. **Real testimonials** — case-study cards still lack named human + photo + title. Lovable conversion playbook flags this as the #1 social-proof killer.
+4. **Verify compliance badges** — SOC 2 Type II, ISO 27001, GDPR, Zero-Knowledge Infra on the security section. If any aren't actually held, remove them. False trust signals hurt when verified.
+5. **Sync modal with /contact form fields** — if you commit to keeping `/contact`, the dormant modal in `index.html` only has 4 fields (no goals checkbox grid, no optional context). Drop the modal entirely or backfill the new fields so revert stays viable.
+6. **Security hardening (repo):** `origin` URL still contains a GitHub PAT inline (`ghp_FUb5Ya…@github.com/…`). Move it out of the URL into Git Credential Manager or switch to SSH so it stops appearing in shell history.
+7. **Slack webhook / Google Sheet sync** — Web3Forms supports both natively. ~2 min setup if you want real-time notifications beyond email.
 
 ## Active Decisions & Context
 - **Brand voice anchors:** monkgroup.ai / uppitai.com / morningside.ai style — short, declarative, benefit-led, contrarian where earned, no "transform your business" buzzwords.

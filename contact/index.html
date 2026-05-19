@@ -244,6 +244,8 @@
     .lead-field:nth-child(2) { animation-delay: 0.14s; }
     .lead-field:nth-child(3) { animation-delay: 0.20s; }
     .lead-field:nth-child(4) { animation-delay: 0.26s; }
+    .lead-field:nth-child(5) { animation-delay: 0.32s; }
+    .lead-field:nth-child(6) { animation-delay: 0.38s; }
     @keyframes fieldIn { to { opacity: 1; transform: translateY(0); } }
 
     .lead-field-num {
@@ -286,6 +288,95 @@
     .lead-field input:focus,
     .lead-field textarea:focus { border-bottom-color: var(--accent); }
     .lead-field.has-value .lead-field-num { color: var(--emerald); }
+
+    /* ===== Checkbox-card grid (goals) ===== */
+    .check-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .check-card {
+      position: relative;
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 14px;
+      background: #fff;
+      border: 1px solid rgba(18, 18, 18, 0.12);
+      cursor: pointer;
+      transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
+      user-select: none;
+    }
+    .check-card:hover { border-color: rgba(18, 18, 18, 0.28); }
+    .check-card input {
+      position: absolute;
+      opacity: 0; pointer-events: none;
+      width: 0; height: 0;
+    }
+    .check-box {
+      width: 16px; height: 16px; flex-shrink: 0;
+      border: 1.5px solid rgba(18, 18, 18, 0.28);
+      background: #fff;
+      position: relative;
+      transition: border-color 0.25s ease, background 0.25s ease;
+    }
+    .check-box::after {
+      content: ''; position: absolute;
+      left: 3px; top: 0;
+      width: 5px; height: 9px;
+      border: solid #0A0D0B;
+      border-width: 0 1.5px 1.5px 0;
+      transform: rotate(45deg) scale(0);
+      transform-origin: center;
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .check-card input:checked ~ .check-box {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .check-card input:checked ~ .check-box::after { transform: rotate(45deg) scale(1); }
+    .check-card:has(input:checked) {
+      border-color: var(--accent);
+      background: rgba(212, 175, 55, 0.06);
+    }
+    .check-card input:focus-visible ~ .check-box {
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.22);
+    }
+    .check-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px; line-height: 1.35;
+      color: var(--text-primary);
+    }
+    @media (max-width: 540px) {
+      .check-grid { grid-template-columns: 1fr; }
+      .check-card { padding: 12px 14px; }
+    }
+
+    /* Optional textarea variant — bordered box (distinct from underlined inputs) */
+    .lead-field-optional .lead-field-body { gap: 8px; }
+    .lead-field-optional textarea {
+      border: 1px solid rgba(18, 18, 18, 0.12);
+      padding: 12px 14px;
+      min-height: 76px;
+      background: #fff;
+      font-size: 14px;
+      line-height: 1.5;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .lead-field-optional textarea:hover { border-color: rgba(18, 18, 18, 0.22); }
+    .lead-field-optional textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+    }
+    .lead-field-label-row {
+      display: flex; align-items: baseline; gap: 8px;
+    }
+    .lead-field-optional-tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 10.5px; font-weight: 500;
+      text-transform: none; letter-spacing: 0.02em;
+      color: var(--text-muted);
+      font-style: italic;
+    }
 
     .lead-error {
       font-size: 12px; color: #8B2A2A;
@@ -432,33 +523,7 @@
     <!-- LEFT: pitch -->
     <section class="pitch">
       <span class="pitch-tag">Systems Audit · Free</span>
-      <h1 class="pitch-title">A 30-minute conversation that leaves you with <em>a plan.</em></h1>
-      <p class="pitch-sub">Four questions on the right. Then we'll talk. No pitch, no slide deck — just a working session.</p>
-
-      <ul class="pitch-list">
-        <li>
-          <span class="pitch-list-num">01</span>
-          <p class="pitch-list-text">
-            <span>You'll leave with your top 3 AI opportunities.</span>
-            <small>Ranked by ROI — measured against your actual workflow, not a generic framework.</small>
-          </p>
-        </li>
-        <li>
-          <span class="pitch-list-num">02</span>
-          <p class="pitch-list-text">
-            <span>A 4-week build plan for the first one.</span>
-            <small>Concrete scope, integration touchpoints, what success looks like in week 5.</small>
-          </p>
-        </li>
-        <li>
-          <span class="pitch-list-num">03</span>
-          <p class="pitch-list-text">
-            <span>Zero obligation. Zero retainer pitch.</span>
-            <small>If we're not the right fit, we'll tell you who is.</small>
-          </p>
-        </li>
-      </ul>
-
+      <h1 class="pitch-title">Let's build <em>something together.</em></h1>
       <p class="pitch-foot">Already decided? <a href="https://cal.com/omar-flores/discovery" target="_blank" rel="noopener">Skip the form and book directly →</a></p>
     </section>
 
@@ -466,8 +531,8 @@
     <section class="form-card" aria-labelledby="formTitle">
       <div data-view="form">
         <div class="form-kicker">Tell us where you're stuck.</div>
-        <h2 class="form-title" id="formTitle">Four questions. Then we talk.</h2>
-        <p class="form-sub">Takes about 40 seconds. We reply within one business day.</p>
+        <h2 class="form-title" id="formTitle">A few quick questions. Then we talk.</h2>
+        <p class="form-sub">Takes about 60 seconds. We reply within one business day.</p>
         <div class="form-rule"></div>
 
         <form class="lead-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
@@ -504,6 +569,56 @@
             <div class="lead-field-body">
               <label class="lead-field-label" for="lf-bottleneck">The bottleneck</label>
               <textarea id="lf-bottleneck" name="message" rows="1" placeholder="e.g. 'manual lead qualification eats 40 hrs a week.'" required></textarea>
+            </div>
+          </div>
+
+          <div class="lead-field" data-goals-field>
+            <span class="lead-field-num">05</span>
+            <div class="lead-field-body">
+              <label class="lead-field-label">What are you hoping to improve with AI or automation?</label>
+              <div class="check-grid" role="group" aria-label="Areas to improve">
+                <label class="check-card">
+                  <input type="checkbox" name="goals" value="Lead generation or sales">
+                  <span class="check-box" aria-hidden="true"></span>
+                  <span class="check-label">Lead generation or sales</span>
+                </label>
+                <label class="check-card">
+                  <input type="checkbox" name="goals" value="Customer support">
+                  <span class="check-box" aria-hidden="true"></span>
+                  <span class="check-label">Customer support</span>
+                </label>
+                <label class="check-card">
+                  <input type="checkbox" name="goals" value="Internal operations">
+                  <span class="check-box" aria-hidden="true"></span>
+                  <span class="check-label">Internal operations</span>
+                </label>
+                <label class="check-card">
+                  <input type="checkbox" name="goals" value="Data processing or reporting">
+                  <span class="check-box" aria-hidden="true"></span>
+                  <span class="check-label">Data processing or reporting</span>
+                </label>
+                <label class="check-card">
+                  <input type="checkbox" name="goals" value="Content or marketing workflows">
+                  <span class="check-box" aria-hidden="true"></span>
+                  <span class="check-label">Content or marketing workflows</span>
+                </label>
+                <label class="check-card">
+                  <input type="checkbox" name="goals" value="Not sure yet">
+                  <span class="check-box" aria-hidden="true"></span>
+                  <span class="check-label">Not sure yet</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="lead-field lead-field-optional">
+            <span class="lead-field-num">06</span>
+            <div class="lead-field-body">
+              <div class="lead-field-label-row">
+                <label class="lead-field-label" for="lf-extra">Anything else?</label>
+                <span class="lead-field-optional-tag">optional</span>
+              </div>
+              <textarea id="lf-extra" name="additional_context" placeholder="Any additional context or questions…"></textarea>
             </div>
           </div>
 
@@ -559,10 +674,12 @@
       var errorEl = document.querySelector('.lead-error');
       var submitBtn = form.querySelector('.lead-submit');
       var submitBtnHTML = submitBtn.innerHTML;
-      var inputs = Array.from(form.querySelectorAll('input:not([type=hidden]):not([name=botcheck]), textarea'));
-      var textarea = form.querySelector('textarea');
+      var inputs = Array.from(form.querySelectorAll('input[type=text], input[type=email], textarea'));
+      var bottleneckTextarea = form.querySelector('#lf-bottleneck');
+      var goalsField = form.querySelector('[data-goals-field]');
+      var goalCheckboxes = Array.from(form.querySelectorAll('input[name="goals"]'));
 
-      // Field-number color flip when populated
+      // Field-number color flip when populated (text/email/textarea)
       inputs.forEach(function(input) {
         input.addEventListener('input', function() {
           var field = input.closest('.lead-field');
@@ -571,11 +688,19 @@
         });
       });
 
-      // Textarea auto-grow
-      if (textarea) {
-        textarea.addEventListener('input', function() {
-          textarea.style.height = 'auto';
-          textarea.style.height = Math.min(textarea.scrollHeight, 160) + 'px';
+      // Goals checkbox group — flip number color when any selected
+      goalCheckboxes.forEach(function(cb) {
+        cb.addEventListener('change', function() {
+          var anyChecked = goalCheckboxes.some(function(c) { return c.checked; });
+          if (goalsField) goalsField.classList.toggle('has-value', anyChecked);
+        });
+      });
+
+      // Textarea auto-grow for the bottleneck field (single-line growable)
+      if (bottleneckTextarea) {
+        bottleneckTextarea.addEventListener('input', function() {
+          bottleneckTextarea.style.height = 'auto';
+          bottleneckTextarea.style.height = Math.min(bottleneckTextarea.scrollHeight, 160) + 'px';
         });
       }
 
@@ -585,8 +710,16 @@
 
         if (form.botcheck && form.botcheck.checked) return;
 
+        // Required: at least one goal checkbox
+        var anyGoal = goalCheckboxes.some(function(c) { return c.checked; });
+        if (!anyGoal) {
+          errorEl.textContent = 'Please pick at least one area we can help with.';
+          if (goalCheckboxes[0]) goalCheckboxes[0].focus();
+          return;
+        }
+
         if (!form.checkValidity()) {
-          errorEl.textContent = 'Please fill every field — it only takes a moment.';
+          errorEl.textContent = 'Please fill every required field — it only takes a moment.';
           form.reportValidity();
           return;
         }

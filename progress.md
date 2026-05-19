@@ -1,6 +1,6 @@
 # Progress Checkpoint
-> Last updated: 2026-05-19 by context-checkpoint skill
-> Context usage at time of checkpoint: ~85%
+> Last updated: 2026-05-19 (second update) by context-checkpoint skill
+> Context usage at time of checkpoint: ~92%
 
 ## Project Overview
 ROMANALABS marketing site — single-page AI consulting agency website at `c:\Users\admin\website-romanalabs\`. Built as one `index.html` (~2700 lines) using Tailwind CDN + custom CSS/JS, no build step. Now also has a dedicated `/contact` page (`contact/index.html`) used as the primary lead-capture surface. Hosted via Cloudflare Pages auto-deploying from GitHub repo `OmarflorexAI/romanalabs-website` (branch `main`). Custom domain `romanalabs.com` (CNAME).
@@ -60,9 +60,29 @@ ROMANALABS marketing site — single-page AI consulting agency website at `c:\Us
     - Both elements navigate back to home page.
     - Main's top padding tightened (`64-120px` → `40-80px`) to compensate for the new bar.
 
+19. **/contact: numbered fields removed + textarea fixes** (`3cf05c0`, `e354293`, `6fcedab`, `765f21a`)
+    - Field numbers (01-06) stripped; grid flattened to single column.
+    - Optional textarea: `overflow-y: auto`, `resize: vertical`, `max-height: 220px`, custom thin scrollbar.
+    - Checkbox check mark: replaced fragile CSS `::after` rotated rectangle with inline SVG centered via flexbox; opacity + scale toggle (no more directional draw glitch on uncheck).
+
+20. **Logo hover refined site-wide** (`765f21a`, `a963403`)
+    - Both `/contact` navbar and main-site header logo now use the same hover: wordmark emerald color shift + letter-spacing 0.18em→0.21em + logo `translateX(-2px)`. Replaced lazy `opacity: 0.7` AI-default with three layered intentional moves.
+
+21. **Process section recentered + cursor removed** (`ea323ec`, `318711b`)
+    - Blur stripped from `.pss-panel` (CSS + JS painter) — was producing "blurry text on scroll" artifact during the continuous scroll-linked updates.
+    - Sticky offset for fixed header: `top: 72px; min-height: calc(100vh - 72px)`. Content now centers in the visible viewport area below the header, not geometric center.
+    - Runway tightened `180vh → 140vh`.
+    - Magnetic cursor (CSS + HTML + JS) removed entirely; OS default cursor restored.
+    - Process section padding-bottom: started at zero (overcorrected), restored to `clamp(56px, 7vw, 80px)` so the CTA button has breathing room before the next section.
+
+22. **/contact footer matches main site** (`14e9b13`)
+    - Replaced the slim mini-footer (single row: copyright + Home/Contact/LinkedIn) with the full main-site footer: logo + tagline + LinkedIn/X/Instagram social icons + email contact link, divider, copyright + Privacy/Terms/Cookies legal row.
+    - Reimplemented in vanilla CSS (the main site uses Tailwind classes; contact page has no Tailwind dependency). Logo mark uses `filter: invert(1) brightness(2.2)` to render white on the obsidian bg, matching the main site exactly.
+    - Stacks single-column on mobile, side-by-side at ≥768px.
+
 ## Current State
 - **Branch:** `main`, fully pushed to `origin/main` (clean working tree).
-- **Latest commit:** `1df39e3`
+- **Latest commit:** `14e9b13`
 - **Cloudflare Pages:** auto-deploys from `main`. Domain `romanalabs.com`. Verified `romanalabs.com/contact/` returns HTTP 200.
 - **Form is LIVE:** Web3Forms key wired in; submissions go to your inbox.
 - **GitHub auth:** PAT was rotated on 2026-05-19 — old token revoked, new one (`ghp_FUb5Ya…`) wired into the remote URL. **Recommended next step:** move it out of the URL into a credential helper or switch to SSH so it stops showing in `git remote -v` / shell history.

@@ -121,12 +121,25 @@
       gap: 10px;
       text-decoration: none;
     }
+    .site-header .logo-link .logo-mark {
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .site-header .logo-link:hover .logo-mark {
+      transform: translateX(-2px);
+    }
+    .site-header .logo-link:hover .logo-text {
+      color: var(--emerald);
+      letter-spacing: 0.21em;
+    }
     .site-header .logo-text {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 15px;
       font-weight: 600;
       color: var(--text-primary);
       letter-spacing: 0.18em;
+      transition:
+        color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        letter-spacing 0.45s cubic-bezier(0.22, 1, 0.36, 1);
       text-transform: uppercase;
     }
     .site-header .nav-links {

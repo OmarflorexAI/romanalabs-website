@@ -49,146 +49,47 @@
 
     a { color: inherit; text-decoration: none; }
 
-    /* ===== Slim header ===== */
-    .site-header {
-      position: sticky; top: 0; z-index: 50;
-      padding: 0 clamp(20px, 4vw, 40px);
-      background: rgba(249, 249, 247, 0.85);
-      backdrop-filter: blur(14px) saturate(1.3);
-      -webkit-backdrop-filter: blur(14px) saturate(1.3);
-      border-bottom: 1px solid rgba(18, 18, 18, 0.06);
-    }
-    .site-header-inner {
-      max-width: 1280px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 72px;
-    }
-    .logo-link {
-      display: inline-flex; align-items: center; gap: 10px;
-    }
-    .logo-mark { width: 30px; height: 30px; display: block; }
-    .logo-text {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 15px; font-weight: 600;
-      color: var(--text-primary);
-      letter-spacing: 0.18em; text-transform: uppercase;
-    }
-    .back-link {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 12px; font-weight: 500;
-      color: var(--text-secondary);
-      letter-spacing: 0.06em;
-      transition: color 0.3s ease, gap 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .back-link:hover { color: var(--text-primary); gap: 12px; }
-    .back-link svg { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
-    .back-link:hover svg { transform: translateX(-3px); }
-    @media (max-width: 540px) {
-      .logo-text { font-size: 11px; letter-spacing: 0.14em; }
-      .logo-mark { width: 24px; height: 24px; }
-    }
-
     /* ===== Layout ===== */
     main {
       flex: 1;
       width: 100%;
-      max-width: 1180px;
+      max-width: 640px;
       margin: 0 auto;
-      padding: clamp(48px, 7vw, 88px) clamp(20px, 5vw, 40px) clamp(64px, 8vw, 96px);
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: clamp(40px, 6vw, 80px);
-    }
-    @media (min-width: 920px) {
-      main { grid-template-columns: 1fr 1.05fr; align-items: start; }
+      padding: clamp(64px, 9vw, 120px) clamp(20px, 5vw, 40px) clamp(64px, 8vw, 96px);
+      display: flex;
+      flex-direction: column;
     }
 
-    /* ===== Left column — editorial intro ===== */
-    .pitch { position: relative; padding-top: 8px; }
-    .pitch-tag {
-      display: inline-flex; align-items: center; gap: 10px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 11px; font-weight: 600;
-      letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--emerald);
-      margin-bottom: 22px;
+    /* ===== Page header (replaces left column) ===== */
+    .page-header {
+      text-align: center;
+      margin-bottom: clamp(32px, 5vw, 56px);
+      opacity: 0;
+      transform: translateY(12px);
+      animation: pageHeaderIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.05s forwards;
     }
-    .pitch-tag::before {
-      content: ''; width: 28px; height: 1px;
-      background: var(--emerald);
-    }
-    .pitch-title {
+    @keyframes pageHeaderIn { to { opacity: 1; transform: translateY(0); } }
+    .page-title {
       font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(36px, 5.5vw, 60px); font-weight: 700;
-      line-height: 1.02; letter-spacing: -0.03em;
+      font-size: clamp(40px, 6.5vw, 64px); font-weight: 700;
+      line-height: 1.02; letter-spacing: -0.035em;
       color: var(--text-primary);
-      margin-bottom: 22px;
+      margin-bottom: 18px;
     }
-    .pitch-title em {
-      font-style: normal; color: var(--accent);
+    .page-title em {
+      font-style: normal;
+      color: var(--accent);
     }
-    .pitch-sub {
+    .page-sub {
       font-size: clamp(15px, 1.4vw, 17px);
-      line-height: 1.65;
+      line-height: 1.6;
       color: var(--text-secondary);
       max-width: 44ch;
-      margin-bottom: 36px;
+      margin: 0 auto;
     }
-
-    .pitch-list {
-      list-style: none; padding: 0;
-      display: flex; flex-direction: column;
-      gap: 18px;
-      margin-top: 30px;
-      padding-top: 30px;
-      border-top: 1px solid rgba(18, 18, 18, 0.08);
-      position: relative;
+    @media (prefers-reduced-motion: reduce) {
+      .page-header { animation: none; opacity: 1; transform: none; }
     }
-    .pitch-list::before {
-      content: ''; position: absolute; left: 0; top: -1px;
-      width: 64px; height: 1px; background: var(--accent);
-    }
-    .pitch-list li {
-      display: grid;
-      grid-template-columns: 32px 1fr;
-      gap: 14px;
-      align-items: start;
-    }
-    .pitch-list-num {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 11px; font-weight: 600;
-      letter-spacing: 0.14em;
-      color: var(--accent);
-      padding-top: 4px;
-    }
-    .pitch-list-text {
-      font-size: 14px; line-height: 1.6;
-      color: var(--text-primary);
-    }
-    .pitch-list-text span {
-      display: block;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 14px; font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 3px;
-    }
-    .pitch-list-text small {
-      display: block;
-      font-size: 13px; line-height: 1.55;
-      color: var(--text-secondary);
-    }
-
-    .pitch-foot {
-      margin-top: 40px;
-      font-size: 13px; color: var(--text-muted);
-    }
-    .pitch-foot a {
-      color: var(--emerald); font-weight: 600;
-      border-bottom: 1px solid rgba(27, 67, 50, 0.25);
-      transition: border-color 0.3s ease;
-    }
-    .pitch-foot a:hover { border-bottom-color: var(--emerald); }
 
     /* ===== Right column — form card ===== */
     .form-card {
@@ -200,34 +101,6 @@
         0 1px 0 rgba(212, 175, 55, 0.18),
         0 30px 60px -28px rgba(10, 13, 11, 0.18),
         0 8px 20px -10px rgba(10, 13, 11, 0.08);
-    }
-    .form-kicker {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 11px; font-weight: 500;
-      letter-spacing: 0.04em; color: var(--text-muted);
-      margin-bottom: 8px;
-    }
-    .form-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(22px, 2.4vw, 26px); font-weight: 700;
-      line-height: 1.15; letter-spacing: -0.02em;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
-    .form-sub {
-      font-size: 14px; line-height: 1.6;
-      color: var(--text-secondary);
-      margin-bottom: 24px;
-      max-width: 36ch;
-    }
-    .form-rule {
-      height: 1px; background: rgba(18, 18, 18, 0.1);
-      margin: 0 0 26px;
-      position: relative;
-    }
-    .form-rule::after {
-      content: ''; position: absolute; left: 0; top: 0;
-      width: 48px; height: 1px; background: var(--accent);
     }
 
     .lead-form { display: flex; flex-direction: column; gap: 20px; }
@@ -503,38 +376,16 @@
 </head>
 <body>
 
-  <!-- ===== HEADER ===== -->
-  <header class="site-header">
-    <div class="site-header-inner">
-      <a href="../index.html" class="logo-link" aria-label="ROMANALABS home">
-        <img src="../brand_assets/Ministerstwo_Lacznosci_logo%20(1).svg" alt="" class="logo-mark">
-        <span class="logo-text">ROMANALABS</span>
-      </a>
-      <a href="../index.html" class="back-link">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        Back to site
-      </a>
-    </div>
-  </header>
-
   <!-- ===== MAIN ===== -->
   <main>
 
-    <!-- LEFT: pitch -->
-    <section class="pitch">
-      <span class="pitch-tag">Systems Audit · Free</span>
-      <h1 class="pitch-title">Let's build <em>something together.</em></h1>
-      <p class="pitch-foot">Already decided? <a href="https://cal.com/omar-flores/discovery" target="_blank" rel="noopener">Skip the form and book directly →</a></p>
-    </section>
+    <header class="page-header">
+      <h1 class="page-title" id="pageTitle">Let's <em>Connect.</em></h1>
+      <p class="page-sub">Tell us about your business and how we can help you scale with AI.</p>
+    </header>
 
-    <!-- RIGHT: form -->
-    <section class="form-card" aria-labelledby="formTitle">
+    <section class="form-card" aria-labelledby="pageTitle">
       <div data-view="form">
-        <div class="form-kicker">Tell us where you're stuck.</div>
-        <h2 class="form-title" id="formTitle">A few quick questions. Then we talk.</h2>
-        <p class="form-sub">Takes about 60 seconds. We reply within one business day.</p>
-        <div class="form-rule"></div>
-
         <form class="lead-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
           <input type="hidden" name="access_key" value="e6107727-57be-4b54-82a6-8ac3529864aa">
           <input type="hidden" name="subject" value="New Systems Audit request — ROMANALABS">

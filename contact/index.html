@@ -278,11 +278,29 @@
     .lead-field-optional textarea {
       border: 1px solid rgba(18, 18, 18, 0.12);
       padding: 12px 14px;
-      min-height: 76px;
+      min-height: 88px;
+      max-height: 220px;
       background: #fff;
       font-size: 14px;
       line-height: 1.5;
+      overflow-y: auto;
+      resize: vertical;
       transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    /* Custom scrollbar — subtle, on-brand */
+    .lead-field-optional textarea::-webkit-scrollbar { width: 8px; }
+    .lead-field-optional textarea::-webkit-scrollbar-track { background: transparent; }
+    .lead-field-optional textarea::-webkit-scrollbar-thumb {
+      background: rgba(18, 18, 18, 0.18);
+      border-radius: 4px;
+      border: 2px solid #fff;
+    }
+    .lead-field-optional textarea::-webkit-scrollbar-thumb:hover {
+      background: rgba(18, 18, 18, 0.32);
+    }
+    .lead-field-optional textarea {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(18, 18, 18, 0.22) transparent;
     }
     .lead-field-optional textarea:hover { border-color: rgba(18, 18, 18, 0.22); }
     .lead-field-optional textarea:focus {

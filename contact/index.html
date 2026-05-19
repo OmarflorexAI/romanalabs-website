@@ -66,15 +66,26 @@
     .nav-brand {
       display: inline-flex; align-items: center; gap: 12px;
       cursor: pointer;
-      transition: opacity 0.25s ease;
     }
-    .nav-brand:hover { opacity: 0.7; }
-    .nav-logo { width: 28px; height: 28px; display: block; }
+    .nav-logo {
+      width: 28px; height: 28px; display: block;
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
     .nav-name {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 14px; font-weight: 600;
       color: var(--text-primary);
       letter-spacing: 0.18em; text-transform: uppercase;
+      transition:
+        color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        letter-spacing 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-brand:hover .nav-name {
+      color: var(--emerald);
+      letter-spacing: 0.21em;
+    }
+    .nav-brand:hover .nav-logo {
+      transform: translateX(-2px);
     }
     .nav-back {
       display: inline-flex; align-items: center; gap: 8px;
@@ -248,17 +259,20 @@
       display: block;
       color: #0A0D0B;
       pointer-events: none;
-      /* Path length is ~14 — overshoot to 18 for clean draw */
-      stroke-dasharray: 18;
-      stroke-dashoffset: 18;
-      transition: stroke-dashoffset 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.06s;
+      opacity: 0;
+      transform: scale(0.55);
+      transform-origin: center;
+      transition:
+        opacity 0.18s ease,
+        transform 0.32s cubic-bezier(0.34, 1.42, 0.42, 1);
     }
     .check-card input:checked ~ .check-box {
       background: var(--accent);
       border-color: var(--accent);
     }
     .check-card input:checked ~ .check-box svg {
-      stroke-dashoffset: 0;
+      opacity: 1;
+      transform: scale(1);
     }
     .check-card:has(input:checked) {
       border-color: var(--accent);

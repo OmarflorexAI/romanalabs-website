@@ -4,55 +4,44 @@ Guidance for Claude Code when working in this repo.
 
 ## What This Is
 
-ROMANALABS marketing site (AI consulting agency) — two static pages (`/` and `/contact`) served by Cloudflare Pages from this GitHub repo. Domain: `romanalabs.com`.
+ROMANALABS marketing site (AI consulting agency) — two static pages (`/` and `/contact`) hosted on **GitHub Pages**, with Cloudflare as a DNS/proxy CDN in front. Domain: `romanalabs.com`. Form submissions go to Web3Forms (third-party).
 
-For deployment, workflow, and Cloudflare auto-build setup, see [README.md](README.md). Read it first if you're touching the build pipeline.
+**This is a no-build-step static site.** Edit HTML/CSS/JS → push → deploys via GitHub Pages auto-build.
 
-## Architecture (current, post-refactor)
+## Architecture
 
 ```
 .
-├── index.html             # ~750 lines of pure markup
-├── contact/index.html     # ~200 lines of pure markup
+├── index.html             # ~2960 lines — full inline <style> + <script> + Tailwind CDN
+├── contact/index.html     # ~711 lines — same pattern, lead-capture form
 ├── assets/
-│   ├── tailwind.css       # PRE-BUILT Tailwind utilities (only what's used). Commit it.
-│   ├── site.css           # Shared: brand tokens (:root) + footer styles. Loaded by BOTH pages.
-│   ├── main.css           # Main page styles (was inline)
-│   ├── main.js            # Main page scripts (was inline; loaded with defer)
-│   ├── contact.css        # Contact page styles
-│   └── contact.js         # Contact page scripts (loaded with defer)
-├── src/tailwind.in.css    # Tailwind input — @import "tailwindcss" + @theme tokens + @source globs
-├── package.json           # Build scripts (build:css, watch:css, screenshot)
-└── brand_assets/          # Logos, brand images
+│   └── site.css           # The only external CSS. Shared brand tokens (:root)
+│                          # + footer styles. Loaded by both pages.
+├── brand_assets/          # SVG logos for tools (Stripe, Shopify, etc.) + main ROMANALABS logo
+├── package.json           # devDependencies: puppeteer (screenshot script only)
+├── screenshot.js          # Puppeteer dual-viewport screenshot tool
+├── CNAME                  # GitHub Pages custom-domain marker — romanalabs.com
+├── progress.md            # Living session checkpoint — read this on every resume
+└── .gitignore             # Excludes node_modules, screenshots, .env*, *.exe
 ```
 
-**No CDN dependencies at runtime.** Tailwind is pre-built locally and committed. Open the live site → DevTools → Console → there should be ZERO warnings.
+**Tailwind via CDN runtime JIT.** Loaded at `<script src="https://cdn.tailwindcss.com">`. The CDN prints a console warning about production use; this is accepted. Pre-building Tailwind locally was attempted (commit `ea9e2ac`) and reverted (`bc23e51`) because the static build was missing utilities the JIT generated from the live DOM.
 
 ## Commands
 
 ```bash
-npm run build:css     # Regenerate assets/tailwind.css (run after adding new Tailwind classes to HTML)
-npm run watch:css     # Same, auto-rerun on file change
 npm run screenshot    # Puppeteer dual-viewport screenshot → screenshot-{mobile,desktop}.png
 ```
 
-## When you must rebuild
+No build step. Editing HTML/CSS/JS is enough — push and it deploys.
 
-Run `npm run build:css` and commit the updated `assets/tailwind.css` whenever you:
-- Add a new Tailwind utility class to any HTML file (e.g. `text-xl`, `gap-8`, anything that didn't exist before)
-- Edit `src/tailwind.in.css` (theme tokens, @source globs)
+## Cache invalidation
 
-You do NOT need to rebuild when you:
-- Edit content/copy
-- Edit `assets/main.css`, `assets/contact.css`, `assets/site.css`
-- Edit JS files
-- Edit existing Tailwind classes that are already in the HTML (already in the pre-built CSS)
+GitHub Pages serves with `max-age=600` defaults. Browsers cache CSS/JS aggressively. The repo uses **`?v=N` cache-bust query strings** appended to asset URLs in HTML (currently `?v=4`).
 
-If Cloudflare Pages auto-build is configured (see README), you never need to rebuild locally — Cloudflare does it on every deploy.
+When you change any inline CSS or JS or `assets/site.css`, **bump `?v=N` to `?v=N+1`** in every `<link href="...?v=N">` and `<script src="...?v=N">` reference in `index.html` and `contact/index.html`. Otherwise returning users keep seeing the old version for up to 10 minutes.
 
-## Brand tokens
-
-Source of truth: `assets/site.css` (`:root` block) + `src/tailwind.in.css` (`@theme` block). **Keep them in sync.** Changing a color in one place without the other will produce visual drift.
+## Brand tokens (source of truth: `assets/site.css` `:root` block)
 
 | Token | Value | Use |
 | --- | --- | --- |
@@ -64,20 +53,32 @@ Source of truth: `assets/site.css` (`:root` block) + `src/tailwind.in.css` (`@th
 | Heading font | Space Grotesk | Geometric sans, all headings + UI labels |
 | Body font | Inter | Refined sans, all body text |
 
-## Push / deploy gotcha
+The Tailwind CDN's runtime config (inline `tailwind.config = {...}` in `index.html`) also defines `bg-accent`, `text-emerald`, etc. as Tailwind utilities. Keep these aligned if you change the palette.
 
-`git push` over HTTPS sometimes stalls silently on this Windows machine (HTTP/2 multiplexing bug). Workaround: `git -c http.version=HTTP/1.1 push origin main`.
+## Push / deploy gotchas
+
+- `git push` over HTTPS can stall silently on this Windows machine (HTTP/2 multiplexing bug). Always use: `git -c http.version=HTTP/1.1 push origin main`
+- GitHub's secret-scanning push protection blocks pushes containing GitHub PAT strings. If you need to reference one in a commit message or markdown file, redact to first 11 + last 4 chars (e.g. `ghp_FUb5Ya…oTkQ`).
+- `_headers` and `netlify.toml` files are NOT used. GitHub Pages doesn't read them. Don't add headers there expecting them to work.
 
 ## Rules
 
-Detailed rules live in `.claude/rules/`. Most are still relevant; one is now outdated:
+Detailed rules live in `.claude/rules/`:
 
 | File | Status |
 |---|---|
-| `screenshot-workflow.md` | Active — use the generate→screenshot→compare→fix loop |
+| `screenshot-workflow.md` | Active — generate→screenshot→compare→fix loop |
 | `design-fidelity.md` | Active — match references exactly, don't add features |
 | `puppeteer-screenshots.md` | Active — explains `revealAll()` and viewport sizes |
-| `brand-identity.md` | **STALE** — references old palette `#4A9FE5`. Current palette is in this file + `assets/site.css`. |
-| `technical-defaults.md` | **STALE** — says "Tailwind via CDN, single file." Current: pre-built Tailwind + externalized assets. |
+| `brand-identity.md` | Active (palette section refreshed — see Brand tokens above) |
+| `technical-defaults.md` | Active — Tailwind via CDN, single file, mobile-first |
 
-**Gotcha (still relevant):** project directory contains a space. `screenshot.js` uses URL-encoded `file:///` paths (`%20`) for Puppeteer navigation but literal paths for file output.
+## Behavioral rules (HARD CONSTRAINTS from user)
+
+- **Do only what the user asks, in the scope they ask.** No proactive architecture overhauls or "senior-engineer correct" sweeping refactors. The user has pushed back on unauthorized big changes.
+- **Check with the user before any change that touches more than the specific element/file they mentioned.**
+- **Do not externalize inline CSS or JS** without testing in production first. Pre-built Tailwind missed runtime-JIT'd utilities and broke the site silently.
+- **No fabricated social proof or compliance claims.** Don't invent testimonials, named clients, or compliance badges. Always flag and ask.
+- **Cal.com link is always secondary, never a competing primary button.**
+
+**Gotcha (still relevant):** project directory path contains a space. `screenshot.js` uses URL-encoded `file:///` paths (`%20`) for Puppeteer navigation but literal paths for file output.

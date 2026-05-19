@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Systems Audit — ROMANALABS</title>
+  <meta name="description" content="A 30-minute conversation. You'll leave with your top 3 AI opportunities ranked by ROI and a 4-week plan for the first one.">
+  <meta property="og:title" content="Book a Systems Audit — ROMANALABS">
+  <meta property="og:description" content="A 30-minute conversation. You'll leave with your top 3 AI opportunities ranked by ROI and a 4-week plan for the first one.">
+  <link rel="icon" type="image/svg+xml" href="/brand_assets/Ministerstwo_Lacznosci_logo%20(1).svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent: #D4AF37;
+      --accent-hover: #C49B2E;
+      --emerald: #1B4332;
+      --emerald-hover: #155229;
+      --bg-primary: #F9F9F7;
+      --bg-paper: #FBFBF8;
+      --text-primary: #121212;
+      --text-secondary: #4A4A4A;
+      --text-muted: #888888;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Noise texture — same as the main site */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      z-index: 9999; pointer-events: none;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ===== Slim header ===== */
+    .site-header {
+      position: sticky; top: 0; z-index: 50;
+      padding: 0 clamp(20px, 4vw, 40px);
+      background: rgba(249, 249, 247, 0.85);
+      backdrop-filter: blur(14px) saturate(1.3);
+      -webkit-backdrop-filter: blur(14px) saturate(1.3);
+      border-bottom: 1px solid rgba(18, 18, 18, 0.06);
+    }
+    .site-header-inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 72px;
+    }
+    .logo-link {
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .logo-mark { width: 30px; height: 30px; display: block; }
+    .logo-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px; font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: 0.18em; text-transform: uppercase;
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px; font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: 0.06em;
+      transition: color 0.3s ease, gap 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .back-link:hover { color: var(--text-primary); gap: 12px; }
+    .back-link svg { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+    .back-link:hover svg { transform: translateX(-3px); }
+    @media (max-width: 540px) {
+      .logo-text { font-size: 11px; letter-spacing: 0.14em; }
+      .logo-mark { width: 24px; height: 24px; }
+    }
+
+    /* ===== Layout ===== */
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: clamp(48px, 7vw, 88px) clamp(20px, 5vw, 40px) clamp(64px, 8vw, 96px);
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: clamp(40px, 6vw, 80px);
+    }
+    @media (min-width: 920px) {
+      main { grid-template-columns: 1fr 1.05fr; align-items: start; }
+    }
+
+    /* ===== Left column — editorial intro ===== */
+    .pitch { position: relative; padding-top: 8px; }
+    .pitch-tag {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--emerald);
+      margin-bottom: 22px;
+    }
+    .pitch-tag::before {
+      content: ''; width: 28px; height: 1px;
+      background: var(--emerald);
+    }
+    .pitch-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(36px, 5.5vw, 60px); font-weight: 700;
+      line-height: 1.02; letter-spacing: -0.03em;
+      color: var(--text-primary);
+      margin-bottom: 22px;
+    }
+    .pitch-title em {
+      font-style: normal; color: var(--accent);
+    }
+    .pitch-sub {
+      font-size: clamp(15px, 1.4vw, 17px);
+      line-height: 1.65;
+      color: var(--text-secondary);
+      max-width: 44ch;
+      margin-bottom: 36px;
+    }
+
+    .pitch-list {
+      list-style: none; padding: 0;
+      display: flex; flex-direction: column;
+      gap: 18px;
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(18, 18, 18, 0.08);
+      position: relative;
+    }
+    .pitch-list::before {
+      content: ''; position: absolute; left: 0; top: -1px;
+      width: 64px; height: 1px; background: var(--accent);
+    }
+    .pitch-list li {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+    .pitch-list-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      padding-top: 4px;
+    }
+    .pitch-list-text {
+      font-size: 14px; line-height: 1.6;
+      color: var(--text-primary);
+    }
+    .pitch-list-text span {
+      display: block;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px; font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+    .pitch-list-text small {
+      display: block;
+      font-size: 13px; line-height: 1.55;
+      color: var(--text-secondary);
+    }
+
+    .pitch-foot {
+      margin-top: 40px;
+      font-size: 13px; color: var(--text-muted);
+    }
+    .pitch-foot a {
+      color: var(--emerald); font-weight: 600;
+      border-bottom: 1px solid rgba(27, 67, 50, 0.25);
+      transition: border-color 0.3s ease;
+    }
+    .pitch-foot a:hover { border-bottom-color: var(--emerald); }
+
+    /* ===== Right column — form card ===== */
+    .form-card {
+      position: relative;
+      background: var(--bg-paper);
+      border-top: 2px solid var(--accent);
+      padding: clamp(28px, 4vw, 44px) clamp(24px, 4vw, 44px) clamp(28px, 4vw, 40px);
+      box-shadow:
+        0 1px 0 rgba(212, 175, 55, 0.18),
+        0 30px 60px -28px rgba(10, 13, 11, 0.18),
+        0 8px 20px -10px rgba(10, 13, 11, 0.08);
+    }
+    .form-kicker {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.04em; color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .form-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(22px, 2.4vw, 26px); font-weight: 700;
+      line-height: 1.15; letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .form-sub {
+      font-size: 14px; line-height: 1.6;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      max-width: 36ch;
+    }
+    .form-rule {
+      height: 1px; background: rgba(18, 18, 18, 0.1);
+      margin: 0 0 26px;
+      position: relative;
+    }
+    .form-rule::after {
+      content: ''; position: absolute; left: 0; top: 0;
+      width: 48px; height: 1px; background: var(--accent);
+    }
+
+    .lead-form { display: flex; flex-direction: column; gap: 20px; }
+    .lead-field {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      column-gap: 14px; row-gap: 6px;
+      align-items: end;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fieldIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .lead-field:nth-child(1) { animation-delay: 0.08s; }
+    .lead-field:nth-child(2) { animation-delay: 0.14s; }
+    .lead-field:nth-child(3) { animation-delay: 0.20s; }
+    .lead-field:nth-child(4) { animation-delay: 0.26s; }
+    @keyframes fieldIn { to { opacity: 1; transform: translateY(0); } }
+
+    .lead-field-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; font-weight: 600;
+      color: var(--accent); letter-spacing: 0.08em;
+      padding-bottom: 10px; align-self: end;
+      transition: color 0.3s ease;
+    }
+    .lead-field-body { grid-column: 2 / 3; display: flex; flex-direction: column; gap: 4px; }
+    .lead-field-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--text-primary);
+    }
+    .lead-field input,
+    .lead-field textarea {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px; font-weight: 400;
+      color: var(--text-primary);
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(18, 18, 18, 0.18);
+      border-radius: 0;
+      padding: 6px 0 8px;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .lead-field textarea {
+      resize: none; min-height: 28px; line-height: 1.55; overflow: hidden;
+    }
+    .lead-field input::placeholder,
+    .lead-field textarea::placeholder {
+      color: rgba(18, 18, 18, 0.32);
+    }
+    .lead-field input:hover,
+    .lead-field textarea:hover { border-bottom-color: rgba(18, 18, 18, 0.32); }
+    .lead-field input:focus,
+    .lead-field textarea:focus { border-bottom-color: var(--accent); }
+    .lead-field.has-value .lead-field-num { color: var(--emerald); }
+
+    .lead-error {
+      font-size: 12px; color: #8B2A2A;
+      min-height: 14px;
+    }
+
+    .form-foot {
+      margin-top: 28px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .lead-submit {
+      position: relative; overflow: hidden;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.06em;
+      color: #0A0D0B;
+      background: var(--accent);
+      border: none;
+      padding: 16px 24px;
+      cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      transition: background 0.3s cubic-bezier(0.22, 1, 0.36, 1), transform 0.3s, box-shadow 0.4s ease;
+    }
+    .lead-submit::after {
+      content: ''; position: absolute;
+      top: 0; left: -100%; width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.32), transparent);
+      transform: skewX(-20deg);
+      transition: left 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .lead-submit:hover:not(:disabled) {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 32px -8px rgba(212, 175, 55, 0.45);
+    }
+    .lead-submit:hover:not(:disabled)::after { left: 130%; }
+    .lead-submit:hover:not(:disabled) svg { transform: translateX(4px); }
+    .lead-submit svg { transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+    .lead-submit:disabled { opacity: 0.55; cursor: wait; }
+
+    .lead-alt {
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+      font-size: 12px; color: var(--text-muted);
+    }
+    .lead-alt::before, .lead-alt::after {
+      content: ''; flex: 1; max-width: 60px;
+      height: 1px; background: rgba(18, 18, 18, 0.1);
+    }
+    .lead-alt a {
+      color: var(--emerald); font-weight: 600;
+      border-bottom: 1px solid rgba(27, 67, 50, 0.25);
+      transition: border-color 0.3s ease, color 0.3s ease;
+    }
+    .lead-alt a:hover { color: var(--emerald-hover); border-bottom-color: var(--emerald); }
+
+    /* ===== Success view ===== */
+    .form-success {
+      padding: 8px 0;
+      animation: successIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    @keyframes successIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .success-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; font-weight: 600;
+      color: var(--accent); letter-spacing: 0.18em;
+      margin-bottom: 14px;
+    }
+    .success-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(28px, 4vw, 38px); font-weight: 700;
+      line-height: 1.05; letter-spacing: -0.025em;
+      color: var(--text-primary);
+      margin-bottom: 14px;
+    }
+    .success-title em { font-style: normal; color: var(--accent); }
+    .success-body {
+      font-size: 14px; line-height: 1.7; color: var(--text-secondary);
+      margin-bottom: 22px;
+      max-width: 42ch;
+    }
+    .success-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-primary);
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--accent);
+      transition: color 0.3s ease, gap 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .success-link:hover { color: var(--accent); gap: 12px; }
+
+    /* ===== Mini footer ===== */
+    .site-footer {
+      background: #0A0D0B;
+      padding: 32px clamp(20px, 5vw, 40px);
+      color: #888;
+      font-size: 12px;
+    }
+    .site-footer-inner {
+      max-width: 1180px; margin: 0 auto;
+      display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: space-between;
+      gap: 16px;
+    }
+    .site-footer a {
+      color: #AAA; transition: color 0.2s ease;
+    }
+    .site-footer a:hover { color: #fff; }
+
+    @media (max-width: 540px) {
+      .form-card { padding: 28px 22px 24px; }
+      .lead-field { grid-template-columns: 22px 1fr; column-gap: 10px; }
+      .lead-field-num { font-size: 10px; }
+      .lead-field-label { font-size: 10px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .lead-field { animation: none; opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="/" class="logo-link" aria-label="ROMANALABS home">
+        <img src="/brand_assets/Ministerstwo_Lacznosci_logo%20(1).svg" alt="" class="logo-mark">
+        <span class="logo-text">ROMANALABS</span>
+      </a>
+      <a href="/" class="back-link">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Back to site
+      </a>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main>
+
+    <!-- LEFT: pitch -->
+    <section class="pitch">
+      <span class="pitch-tag">Systems Audit · Free</span>
+      <h1 class="pitch-title">A 30-minute conversation that leaves you with <em>a plan.</em></h1>
+      <p class="pitch-sub">Four questions on the right. Then we'll talk. No pitch, no slide deck — just a working session.</p>
+
+      <ul class="pitch-list">
+        <li>
+          <span class="pitch-list-num">01</span>
+          <p class="pitch-list-text">
+            <span>You'll leave with your top 3 AI opportunities.</span>
+            <small>Ranked by ROI — measured against your actual workflow, not a generic framework.</small>
+          </p>
+        </li>
+        <li>
+          <span class="pitch-list-num">02</span>
+          <p class="pitch-list-text">
+            <span>A 4-week build plan for the first one.</span>
+            <small>Concrete scope, integration touchpoints, what success looks like in week 5.</small>
+          </p>
+        </li>
+        <li>
+          <span class="pitch-list-num">03</span>
+          <p class="pitch-list-text">
+            <span>Zero obligation. Zero retainer pitch.</span>
+            <small>If we're not the right fit, we'll tell you who is.</small>
+          </p>
+        </li>
+      </ul>
+
+      <p class="pitch-foot">Already decided? <a href="https://cal.com/omar-flores/discovery" target="_blank" rel="noopener">Skip the form and book directly →</a></p>
+    </section>
+
+    <!-- RIGHT: form -->
+    <section class="form-card" aria-labelledby="formTitle">
+      <div data-view="form">
+        <div class="form-kicker">Tell us where you're stuck.</div>
+        <h2 class="form-title" id="formTitle">Four questions. Then we talk.</h2>
+        <p class="form-sub">Takes about 40 seconds. We reply within one business day.</p>
+        <div class="form-rule"></div>
+
+        <form class="lead-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
+          <input type="hidden" name="access_key" value="e6107727-57be-4b54-82a6-8ac3529864aa">
+          <input type="hidden" name="subject" value="New Systems Audit request — ROMANALABS">
+          <input type="hidden" name="from_name" value="ROMANALABS Website (/contact)">
+
+          <div class="lead-field">
+            <span class="lead-field-num">01</span>
+            <div class="lead-field-body">
+              <label class="lead-field-label" for="lf-name">Your name</label>
+              <input type="text" id="lf-name" name="name" placeholder="Jane Smith" required autocomplete="name">
+            </div>
+          </div>
+
+          <div class="lead-field">
+            <span class="lead-field-num">02</span>
+            <div class="lead-field-body">
+              <label class="lead-field-label" for="lf-email">Work email</label>
+              <input type="email" id="lf-email" name="email" placeholder="jane@company.com" required autocomplete="email">
+            </div>
+          </div>
+
+          <div class="lead-field">
+            <span class="lead-field-num">03</span>
+            <div class="lead-field-body">
+              <label class="lead-field-label" for="lf-company">Company &amp; role</label>
+              <input type="text" id="lf-company" name="company_role" placeholder="Acme Inc — Head of Ops" required autocomplete="organization">
+            </div>
+          </div>
+
+          <div class="lead-field">
+            <span class="lead-field-num">04</span>
+            <div class="lead-field-body">
+              <label class="lead-field-label" for="lf-bottleneck">The bottleneck</label>
+              <textarea id="lf-bottleneck" name="message" rows="1" placeholder="e.g. 'manual lead qualification eats 40 hrs a week.'" required></textarea>
+            </div>
+          </div>
+
+          <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
+
+          <div class="lead-error" role="alert" aria-live="polite"></div>
+
+          <div class="form-foot">
+            <button type="submit" class="lead-submit">
+              Send &amp; open the calendar
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+            <div class="lead-alt">
+              Already sure? <a href="https://cal.com/omar-flores/discovery" target="_blank" rel="noopener">Book directly</a>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div data-view="success" style="display:none;">
+        <div class="form-success">
+          <div class="success-num">— Received —</div>
+          <h2 class="success-title">Got it. Pick a <em>time.</em></h2>
+          <p class="success-body">We've opened the calendar in a new tab. If your browser blocked it, use the link below — see you in 30 minutes.</p>
+          <a class="success-link" href="https://cal.com/omar-flores/discovery" target="_blank" rel="noopener">
+            Open the calendar
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <p>&copy; 2025 ROMANALABS Inc.</p>
+      <div style="display:flex; gap:18px;">
+        <a href="/">Home</a>
+        <a href="mailto:omar@romanalabs.com">Contact</a>
+        <a href="https://www.linkedin.com/company/romanalabsai" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      var CAL_URL = 'https://cal.com/omar-flores/discovery';
+      var form = document.querySelector('.lead-form');
+      var formView = document.querySelector('[data-view="form"]');
+      var successView = document.querySelector('[data-view="success"]');
+      var errorEl = document.querySelector('.lead-error');
+      var submitBtn = form.querySelector('.lead-submit');
+      var submitBtnHTML = submitBtn.innerHTML;
+      var inputs = Array.from(form.querySelectorAll('input:not([type=hidden]):not([name=botcheck]), textarea'));
+      var textarea = form.querySelector('textarea');
+
+      // Field-number color flip when populated
+      inputs.forEach(function(input) {
+        input.addEventListener('input', function() {
+          var field = input.closest('.lead-field');
+          if (!field) return;
+          field.classList.toggle('has-value', input.value.trim().length > 0);
+        });
+      });
+
+      // Textarea auto-grow
+      if (textarea) {
+        textarea.addEventListener('input', function() {
+          textarea.style.height = 'auto';
+          textarea.style.height = Math.min(textarea.scrollHeight, 160) + 'px';
+        });
+      }
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        errorEl.textContent = '';
+
+        if (form.botcheck && form.botcheck.checked) return;
+
+        if (!form.checkValidity()) {
+          errorEl.textContent = 'Please fill every field — it only takes a moment.';
+          form.reportValidity();
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Sending…';
+
+        var data = new FormData(form);
+
+        fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        })
+          .then(function(r) { return r.json(); })
+          .then(function(res) {
+            if (res && res.success) {
+              formView.style.display = 'none';
+              successView.style.display = '';
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              setTimeout(function() {
+                window.open(CAL_URL, '_blank', 'noopener');
+              }, 900);
+            } else {
+              throw new Error((res && res.message) || 'Submission failed');
+            }
+          })
+          .catch(function(err) {
+            errorEl.textContent = 'Something went wrong. Please try again or book directly below.';
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = submitBtnHTML;
+            console.error(err);
+          });
+      });
+    })();
+  </script>
+
+</body>
+</html>

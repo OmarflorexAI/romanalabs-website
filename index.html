@@ -44,33 +44,7 @@
       background-color: var(--bg-primary);
       color: var(--text-secondary);
       overflow-x: hidden;
-      cursor: none;
     }
-
-    /* Custom magnetic cursor */
-    .cursor-dot {
-      position: fixed;
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--accent);
-      pointer-events: none;
-      z-index: 99999;
-      transform: translate(-50%, -50%);
-      transition: width 0.25s ease, height 0.25s ease, background 0.25s ease;
-    }
-    .cursor-ring {
-      position: fixed;
-      width: 34px; height: 34px;
-      border-radius: 50%;
-      border: 1.5px solid rgba(27, 67, 50, 0.45);
-      pointer-events: none;
-      z-index: 99998;
-      transform: translate(-50%, -50%);
-      transition: width 0.35s cubic-bezier(0.16,1,0.3,1), height 0.35s cubic-bezier(0.16,1,0.3,1), border-color 0.3s ease;
-    }
-    body.cursor-hover .cursor-dot { width: 10px; height: 10px; }
-    body.cursor-hover .cursor-ring { width: 58px; height: 58px; border-color: rgba(212, 175, 55, 0.55); }
-    @media (hover: none) { .cursor-dot, .cursor-ring { display: none; } body { cursor: auto; } }
 
     /* Noise texture */
     body::before {
@@ -1278,13 +1252,13 @@
     .footer-link:hover { color: var(--text-primary); }
 
     /* ===== Process Sticky Scroll ===== */
-    .pss-outer { height: 180vh; position: relative; }
+    .pss-outer { height: 140vh; position: relative; }
     .pss-sticky {
-      position: sticky; top: 0;
-      min-height: 100vh;
+      position: sticky; top: 72px; /* offset for fixed header */
+      min-height: calc(100vh - 72px);
       display: grid; grid-template-columns: 300px 1fr;
       gap: 100px; align-content: center; align-items: center;
-      padding: 40px 0;
+      padding: 0;
     }
     .pss-nav { position: relative; display: flex; flex-direction: column; }
     .pss-track {
@@ -1325,19 +1299,16 @@
     .pss-panel {
       position: absolute; top: 0; left: 0; right: 0;
       opacity: 0; pointer-events: none;
-      transform: translateY(28px) scale(0.985);
-      filter: blur(3px);
-      /* Tiny smoothing only — JS drives values per frame so we keep transitions short */
+      transform: translateY(28px);
+      /* Tight smoothing — JS drives values per frame so transitions stay short */
       transition:
-        opacity 0.14s linear,
-        transform 0.14s linear,
-        filter 0.18s ease-out;
-      will-change: opacity, transform, filter;
+        opacity 0.18s linear,
+        transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: opacity, transform;
     }
     .pss-panel.active {
       opacity: 1; pointer-events: auto;
-      transform: translateY(0) scale(1);
-      filter: blur(0);
+      transform: translateY(0);
     }
     /* Panel inner: content left, art right */
     .pss-panel-inner {
@@ -1802,8 +1773,6 @@
 <body>
 
   <!-- Magnetic cursor -->
-  <div class="cursor-dot" id="cursorDot"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
 
   <!-- ===== HEADER / NAV ===== -->
   <header class="site-header" id="siteHeader">
@@ -2106,7 +2075,7 @@
 
 
 <!-- ===== PROCESS ===== -->
-  <section id="process" style="padding-top: clamp(72px,7vw,96px); padding-bottom: clamp(32px,4vw,48px);">
+  <section id="process" style="padding-top: clamp(72px,7vw,96px); padding-bottom: 0;">
     <div class="max-content" style="padding: 0 clamp(20px, 5vw, 40px);">
       <div class="text-center mb-16">
         <p class="section-label mb-4 reveal">PROCESS</p>
@@ -2293,7 +2262,7 @@
         </div>
       </div>
 
-      <div class="text-center reveal" style="padding-top: 16px;">
+      <div class="text-center reveal" style="padding-top: 0;">
         <a href="contact/index.html" class="btn-cta inline-flex items-center gap-2 bg-accent text-[#0A0D0B] text-[14px] font-semibold px-8 py-4 rounded-full hover:bg-accent-hover">
           Book a Systems Audit
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -2764,38 +2733,6 @@
       });
     })();
 
-    // ===== Magnetic cursor =====
-    (function() {
-      if (window.matchMedia('(hover: none)').matches) return;
-      var dot = document.getElementById('cursorDot');
-      var ring = document.getElementById('cursorRing');
-      if (!dot || !ring) return;
-
-      var mx = -200, my = -200;
-      var rx = -200, ry = -200;
-
-      document.addEventListener('mousemove', function(e) {
-        mx = e.clientX;
-        my = e.clientY;
-        dot.style.left = mx + 'px';
-        dot.style.top  = my + 'px';
-      }, { passive: true });
-
-      (function animateRing() {
-        rx += (mx - rx) * 0.14;
-        ry += (my - ry) * 0.14;
-        ring.style.left = rx + 'px';
-        ring.style.top  = ry + 'px';
-        requestAnimationFrame(animateRing);
-      })();
-
-      // Expand ring on interactive elements
-      var targets = 'a, button, .card, .challenge-card, .diff-card, .feature-card, .display-card';
-      document.querySelectorAll(targets).forEach(function(el) {
-        el.addEventListener('mouseenter', function() { document.body.classList.add('cursor-hover'); }, { passive: true });
-        el.addEventListener('mouseleave', function() { document.body.classList.remove('cursor-hover'); }, { passive: true });
-      });
-    })();
 
     // ===== Process Sticky Scroll (continuous scroll-linked) =====
     (function() {
@@ -2827,8 +2764,7 @@
         if (scrollable <= 0) {
           panels.forEach(function(p, i) {
             p.style.opacity = i === 0 ? '1' : '0';
-            p.style.transform = i === 0 ? 'translateY(0) scale(1)' : '';
-            p.style.filter = i === 0 ? 'blur(0)' : '';
+            p.style.transform = i === 0 ? 'translateY(0)' : '';
             p.style.pointerEvents = i === 0 ? 'auto' : 'none';
           });
           updateNav(0);
@@ -2852,14 +2788,11 @@
           else if (dist > 0.75) opacity = 0;
           else opacity = 1 - (dist - 0.35) / 0.4;
 
-          // Slide: panel comes from below (+24px) when upcoming, goes up (-24px) when passed
-          var slide = (i - floatIdx) * 24;
-          var scale = 0.985 + 0.015 * opacity;
-          var blur = (1 - opacity) * 3;
+          // Slide: panel comes from below (+22px) when upcoming, goes up (-22px) when passed
+          var slide = (i - floatIdx) * 22;
 
           panel.style.opacity = opacity.toFixed(3);
-          panel.style.transform = 'translateY(' + slide.toFixed(1) + 'px) scale(' + scale.toFixed(3) + ')';
-          panel.style.filter = blur > 0.05 ? 'blur(' + blur.toFixed(2) + 'px)' : 'blur(0)';
+          panel.style.transform = 'translateY(' + slide.toFixed(1) + 'px)';
           panel.style.pointerEvents = opacity > 0.5 ? 'auto' : 'none';
         });
 

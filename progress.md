@@ -1,9 +1,9 @@
 # Progress Checkpoint
-> Last updated: 2026-05-19 (second update) by context-checkpoint skill
-> Context usage at time of checkpoint: ~92%
+> Last updated: 2026-05-19 (third update — post-security-audit) by context-checkpoint skill
+> Context usage at time of checkpoint: ~95%
 
 ## Project Overview
-ROMANALABS marketing site — single-page AI consulting agency website at `c:\Users\admin\website-romanalabs\`. Built as one `index.html` (~2700 lines) using Tailwind CDN + custom CSS/JS, no build step. Now also has a dedicated `/contact` page (`contact/index.html`) used as the primary lead-capture surface. Hosted via Cloudflare Pages auto-deploying from GitHub repo `OmarflorexAI/romanalabs-website` (branch `main`). Custom domain `romanalabs.com` (CNAME).
+ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\Users\admin\website-romanalabs\`. Pure HTML/CSS/JS, **no backend, no database, no auth**. Tailwind v4 is pre-compiled locally (no CDN). Hosted via Cloudflare Pages auto-deploying from GitHub repo `OmarflorexAI/romanalabs-website` (branch `main`). Custom domain `romanalabs.com`. Form submissions handled by Web3Forms (third-party). See [README.md](README.md) for build/deploy workflow, [CLAUDE.md](CLAUDE.md) for the architecture map.
 
 ## What Has Been Accomplished
 
@@ -82,6 +82,8 @@ ROMANALABS marketing site — single-page AI consulting agency website at `c:\Us
 
 23. **Extract shared CSS file** (`a6ee392`) — created `assets/site.css` containing brand tokens + footer styles. Both pages link to it. Killed the duplicate `:root` block and duplicate footer CSS across files.
 
+### Session 3 (2026-05-19) — Security audit + remediation
+
 24. **Architecture overhaul: kill Tailwind CDN, externalize all inline assets** (`ea9e2ac`)
     - **Pre-built Tailwind via local CLI**: `src/tailwind.in.css` defines `@import "tailwindcss"` + `@theme` tokens (accent/emerald/card/alabaster/fonts/radii) + `@source` globs. `npm run build:css` generates `assets/tailwind.css` (19KB, only used classes). Replaced `<script src="cdn.tailwindcss.com">` with `<link rel="stylesheet">`. Production console: zero warnings.
     - **Inline blocks externalized**:
@@ -93,24 +95,73 @@ ROMANALABS marketing site — single-page AI consulting agency website at `c:\Us
     - **CLAUDE.md rewritten** to reflect new architecture for future agents.
     - **Verified** via screenshot.js — visual render identical before/after.
 
+25. **Full security audit performed** (in-conversation, no commit)
+    Senior-engineer pass covering OWASP Top 10 + AI-code-gen patterns. Identified 4 ❌ FAIL findings, 10 ⚠️ PARTIAL findings, 26 ⬚ N/A. Overall rating: 🟡 ACCEPTABLE (with HIGH items needing immediate fix).
+
+    **❌ FAIL findings identified:**
+    - #1 (HIGH) — GitHub PAT in `git remote -v` (full `repo` scope, visible in shell history + this transcript)
+    - #4 (MEDIUM) — `package-lock.json` gitignored (supply-chain risk: `npm install` resolves to latest semver match, enables event-stream-style attacks)
+    - #5 (HIGH) — CSP `connect-src 'none'` silently blocking all form submissions in production
+    - #9.1/9.2 (folded into #5) — CSP still allowed `'unsafe-inline'` + `https://cdn.tailwindcss.com` from before the externalization refactor
+
+26. **Security fixes shipped** (`8b77559`, `e4de102`)
+    - **`8b77559` — CSP fix** ([_headers](_headers)):
+      - `connect-src 'self' https://api.web3forms.com` (was `'none'` — was breaking the form)
+      - Added explicit `form-action 'self' https://api.web3forms.com` (defense-in-depth)
+      - Removed `'unsafe-inline'` and `cdn.tailwindcss.com` from `script-src` (no longer needed; kills the primary XSS exploitation path)
+      - Removed unused `https://placehold.co` from `img-src`
+      - Added `base-uri 'self'` (blocks `<base>` tag injection)
+      - Added `Cache-Control: public, max-age=31536000, immutable` for `/assets/*` (cache benefit of the externalization refactor)
+    - **`e4de102` — Lockfile + gitignore cleanup**:
+      - Committed `package-lock.json` (removed from `.gitignore`)
+      - Removed stale ignore entries for the now-deleted v3 files (`tailwind.config.js`, `input.css`, `output.css`) — these files were already deleted from disk; only the ignore entries remained
+      - Added defensive `.env` / `.env.*` wildcards
+      - Restructured `.gitignore` with section comments
+    - **PAT removed from local remote URL** (`.git/config`, uncommitted local change):
+      - Was `https://ghp_FUb5Ya…@github.com/OmarflorexAI/romanalabs-website.git`
+      - Now `https://github.com/OmarflorexAI/romanalabs-website.git`
+      - Git Credential Manager already installed (Git for Windows ships with it); next push will use it interactively once.
+      - **PAT itself still alive on GitHub until user revokes it manually** — see "What Comes Next" #1
+
 ## Current State
 - **Branch:** `main`, fully pushed to `origin/main` (clean working tree).
-- **Latest commit:** `ea9e2ac`
+- **Latest commit:** `e4de102` (lockfile + gitignore cleanup)
+- **Previous commit:** `8b77559` (CSP fix)
+- **Local-only uncommitted change:** the remote URL in `.git/config` no longer contains the GitHub PAT. (This is a local git config change, not a tracked file — not pushable. The change applies immediately to git operations.)
+- **Form is LIVE and now works in production** (verified the CSP fix shipped; user should test end-to-end by submitting on `romanalabs.com/contact/` and confirming receipt in Web3Forms inbox).
+- **Two GitHub PATs were leaked then revoked** (deleted in dashboard 2026-05-19):
+  - `ghp_FUb5Ya…oTkQ` (current — was active when audit ran)
+  - `ghp_66t3OU…WwM01` (previous — rotated earlier this session)
+  Both had full `repo` scope; both are now dead. Recorded in redacted form to avoid GitHub secret-scanning push protection.
 - **Cloudflare Pages:** auto-deploys from `main`. Domain `romanalabs.com`. Verified `romanalabs.com/contact/` returns HTTP 200.
 - **Form is LIVE:** Web3Forms key wired in; submissions go to your inbox.
-- **GitHub auth:** PAT was rotated on 2026-05-19 — old token revoked, new one (`ghp_FUb5Ya…`) wired into the remote URL. **Recommended next step:** move it out of the URL into a credential helper or switch to SSH so it stops showing in `git remote -v` / shell history.
+- **GitHub auth:** Both PATs revoked 2026-05-19. PAT removed from local remote URL. Next push will trigger Git Credential Manager (already installed) for one-time interactive sign-in.
 - **Local working tree:** clean.
 
 ## What Comes Next
-Nothing was left mid-task. Optional follow-ups:
 
-1. **Verify form submission end-to-end** — submit a test entry at `romanalabs.com/contact/` to confirm it lands in the configured Web3Forms inbox.
-2. **A/B decision: modal vs /contact page** — modal code is dormant but intact in `index.html`. If `/contact` underperforms in conversion, revert by find-replacing `href="contact/index.html"` → `href="https://cal.com/..."` in the 5 CTA spots (the modal interceptor will pick them back up).
-3. **Real testimonials** — case-study cards still lack named human + photo + title. Lovable conversion playbook flags this as the #1 social-proof killer.
-4. **Verify compliance badges** — SOC 2 Type II, ISO 27001, GDPR, Zero-Knowledge Infra on the security section. If any aren't actually held, remove them. False trust signals hurt when verified.
-5. **Sync modal with /contact form fields** — if you commit to keeping `/contact`, the dormant modal in `index.html` only has 4 fields (no goals checkbox grid, no optional context). Drop the modal entirely or backfill the new fields so revert stays viable.
-6. **Security hardening (repo):** `origin` URL still contains a GitHub PAT inline (`ghp_FUb5Ya…@github.com/…`). Move it out of the URL into Git Credential Manager or switch to SSH so it stops appearing in shell history.
-7. **Slack webhook / Google Sheet sync** — Web3Forms supports both natively. ~2 min setup if you want real-time notifications beyond email.
+### Immediate — user dashboard actions (BLOCKING until done)
+
+1. ✅ **GitHub PATs revoked** in dashboard (done 2026-05-19). Both `ghp_FUb5Ya…oTkQ` and `ghp_66t3OU…WwM01` are dead.
+2. **First push after revocation triggers GCM prompt** — Git Credential Manager is already installed (Git for Windows bundles it). The first `git push` from this machine spawns the Windows GUI sign-in dialog. Sign in once via browser; token gets stored encrypted in Windows Credential Manager. Future pushes are silent.
+3. **End-to-end form test** — submit a test entry at https://romanalabs.com/contact/ → check Web3Forms inbox to confirm the new CSP delivered the lead.
+
+### Then — remaining ⚠️ PARTIAL findings from the audit (priority order)
+
+4. **Web3Forms hardening** (Finding #2, ~5 min): in https://web3forms.com dashboard, set Allowed Domains = `romanalabs.com` + `localhost`. Enable hCaptcha. Web3Forms key is in client HTML by design but spammers can scrape it without these guards.
+5. **Honeypot a11y fix** (Finding #9.4, ~1 min): add `aria-hidden="true"` and `pointer-events:none` to the `name="botcheck"` checkbox in `contact/index.html:124` and `index.html:725`.
+6. **`npm audit fix`** (Finding #5.1, ~2 min): 3 vulns in puppeteer transitive deps (basic-ftp HIGH, ip-address MOD, ws MOD). Local-dev-only — never ships to production.
+7. **Move puppeteer to `devDependencies`** (Finding #5.5, ~1 min): currently misclassified in `package.json` as a runtime dep.
+8. **Delete `netlify.toml` + `nul`** (Finding #9.6, ~1 min): Cloudflare ignores netlify.toml; the `nul` file is a Windows redirection artifact.
+9. **Decision: dormant modal in `index.html`** (Finding #9.3): the lead-capture modal CSS/HTML/JS still lives in `index.html` + `assets/main.css` + `assets/main.js`, no longer triggered by any CTA. Either delete it (cleanup) or consolidate (replace `/contact` with modal-only).
+10. **Optional: self-host fonts** (Finding #9.5, ~30 min): replace Google Fonts CDN with locally-hosted Space Grotesk + Inter `.woff2` files in `/assets/fonts/`. Eliminates the last third-party CSS dependency.
+
+### Open product-side follow-ups from earlier sessions
+
+11. **Real testimonials** for case-study cards — Lovable playbook flags vague social proof as #1 conversion killer. Don't fabricate; ask user for real names/photos/titles.
+12. **Verify compliance badges** (SOC 2 Type II / ISO 27001 / GDPR / Zero-Knowledge Infra on the security section). Remove any that aren't actually held.
+13. **A/B decision: modal vs /contact page** — currently using `/contact` as the only entry point. Modal is dormant fallback. Pick one long-term to drop the duplication.
+14. **Slack webhook / Google Sheet sync** on Web3Forms — 2-min dashboard setup for real-time lead notifications.
 
 ## Active Decisions & Context
 - **Brand voice anchors:** monkgroup.ai / uppitai.com / morningside.ai style — short, declarative, benefit-led, contrarian where earned, no "transform your business" buzzwords.
@@ -121,6 +172,8 @@ Nothing was left mid-task. Optional follow-ups:
 - **CTAs:** single primary action at all times. Cal.com link is *always* secondary — small em-rule line, never a competing button. Per Lovable: "Multiple competing CTAs reduce commitment."
 - **Cloudflare deploy is implicit** — pushing to `main` triggers it. No CLI step needed.
 - **Push gotcha:** `git push` over HTTPS on this machine hangs silently due to HTTP/2 multiplexing stall. Use `git -c http.version=HTTP/1.1 push origin main` to bypass.
+- **Push auth gotcha (post-PAT-rotation):** the PAT has been removed from the local remote URL. First push after token revocation will spawn the GCM Windows dialog — interactive, can't be done from a headless Claude session. If user runs `/security-fix` style commands again from Claude, they'll need to either (a) re-embed a fresh PAT in the URL temporarily, or (b) push manually from their own terminal.
+- **Security audit was performed** in Session 3 — see this file's "What Has Been Accomplished" #25 / #26 and "What Comes Next" #1-10 for the full finding-by-finding plan.
 - **Local preview gotcha:** when opening `index.html` via `file://`, server-absolute paths (`/contact`, `/brand_assets/...`) don't resolve. All asset paths are now relative for this reason.
 
 ## Key Files

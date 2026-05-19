@@ -6,11 +6,16 @@
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://api.web3forms.com; form-action 'self' https://api.web3forms.com; frame-ancestors 'none'; base-uri 'self'
 
+# Brand assets (logos, icons) never change — safe to cache aggressively
 /brand_assets/*
   Cache-Control: public, max-age=31536000, immutable
 
+# Site CSS / JS — short cache + revalidate so edits show up promptly
+# (Filenames don't carry content hashes, so 'immutable' would trap stale bytes
+# in users' browsers for a year after any update. Revalidate is correct here.)
 /assets/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=300, must-revalidate
 
+# HTML — always revalidate so users see the latest deploy immediately
 /*.html
   Cache-Control: public, max-age=0, must-revalidate

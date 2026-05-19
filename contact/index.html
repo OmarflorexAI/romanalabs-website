@@ -163,10 +163,9 @@
 
     .lead-form { display: flex; flex-direction: column; gap: 20px; }
     .lead-field {
-      display: grid;
-      grid-template-columns: 28px 1fr;
-      column-gap: 14px; row-gap: 6px;
-      align-items: end;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
       opacity: 0;
       transform: translateY(10px);
       animation: fieldIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
@@ -179,14 +178,7 @@
     .lead-field:nth-child(6) { animation-delay: 0.38s; }
     @keyframes fieldIn { to { opacity: 1; transform: translateY(0); } }
 
-    .lead-field-num {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 11px; font-weight: 600;
-      color: var(--accent); letter-spacing: 0.08em;
-      padding-bottom: 10px; align-self: end;
-      transition: color 0.3s ease;
-    }
-    .lead-field-body { grid-column: 2 / 3; display: flex; flex-direction: column; gap: 4px; }
+    .lead-field-body { display: flex; flex-direction: column; gap: 4px; }
     .lead-field-label {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 11px; font-weight: 600;
@@ -218,7 +210,6 @@
     .lead-field textarea:hover { border-bottom-color: rgba(18, 18, 18, 0.32); }
     .lead-field input:focus,
     .lead-field textarea:focus { border-bottom-color: var(--accent); }
-    .lead-field.has-value .lead-field-num { color: var(--emerald); }
 
     /* ===== Checkbox-card grid (goals) ===== */
     .check-grid {
@@ -423,8 +414,6 @@
 
     @media (max-width: 540px) {
       .form-card { padding: 28px 22px 24px; }
-      .lead-field { grid-template-columns: 22px 1fr; column-gap: 10px; }
-      .lead-field-num { font-size: 10px; }
       .lead-field-label { font-size: 10px; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -464,7 +453,6 @@
           <input type="hidden" name="from_name" value="ROMANALABS Website (/contact)">
 
           <div class="lead-field">
-            <span class="lead-field-num">01</span>
             <div class="lead-field-body">
               <label class="lead-field-label" for="lf-name">Your name</label>
               <input type="text" id="lf-name" name="name" placeholder="Jane Smith" required autocomplete="name">
@@ -472,7 +460,6 @@
           </div>
 
           <div class="lead-field">
-            <span class="lead-field-num">02</span>
             <div class="lead-field-body">
               <label class="lead-field-label" for="lf-email">Work email</label>
               <input type="email" id="lf-email" name="email" placeholder="jane@company.com" required autocomplete="email">
@@ -480,7 +467,6 @@
           </div>
 
           <div class="lead-field">
-            <span class="lead-field-num">03</span>
             <div class="lead-field-body">
               <label class="lead-field-label" for="lf-company">Company &amp; role</label>
               <input type="text" id="lf-company" name="company_role" placeholder="Acme Inc — Head of Ops" required autocomplete="organization">
@@ -488,7 +474,6 @@
           </div>
 
           <div class="lead-field">
-            <span class="lead-field-num">04</span>
             <div class="lead-field-body">
               <label class="lead-field-label" for="lf-bottleneck">The bottleneck</label>
               <textarea id="lf-bottleneck" name="message" rows="1" placeholder="e.g. 'manual lead qualification eats 40 hrs a week.'" required></textarea>
@@ -496,7 +481,6 @@
           </div>
 
           <div class="lead-field" data-goals-field>
-            <span class="lead-field-num">05</span>
             <div class="lead-field-body">
               <label class="lead-field-label">What are you hoping to improve with AI or automation?</label>
               <div class="check-grid" role="group" aria-label="Areas to improve">
@@ -535,7 +519,6 @@
           </div>
 
           <div class="lead-field lead-field-optional">
-            <span class="lead-field-num">06</span>
             <div class="lead-field-body">
               <div class="lead-field-label-row">
                 <label class="lead-field-label" for="lf-extra">Anything else?</label>

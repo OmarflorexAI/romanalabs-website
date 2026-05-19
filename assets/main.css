@@ -1215,6 +1215,107 @@
     }
     .footer-link:hover { color: var(--text-primary); }
 
+    /* ===== Process Section — clean 3-card grid (static, no animation drama) ===== */
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+    @media (max-width: 960px) {
+      .process-grid { grid-template-columns: 1fr; gap: 16px; }
+    }
+    .process-card {
+      background: var(--bg-primary);
+      border: 0.5px solid rgba(18, 18, 18, 0.1);
+      border-radius: 14px;
+      padding: 32px 28px 30px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
+      transition:
+        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .process-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .process-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 44px rgba(0, 0, 0, 0.09), 0 0 0 0.5px rgba(212, 175, 55, 0.18);
+      border-color: rgba(212, 175, 55, 0.3);
+    }
+    .process-card:hover::before { opacity: 1; }
+
+    .process-card-head {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 6px;
+    }
+    .process-card-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(28px, 4vw, 36px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .process-card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(17px, 1.8vw, 20px);
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      color: var(--text-primary);
+      line-height: 1.2;
+      flex: 1;
+    }
+    .process-card-tag {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--emerald);
+      font-style: italic;
+      margin: 0 0 20px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(18, 18, 18, 0.08);
+    }
+    .process-card-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .process-card-list li {
+      position: relative;
+      padding-left: 22px;
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+    .process-card-list li:last-child { margin-bottom: 0; }
+    .process-card-list li::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 9px;
+      width: 12px; height: 1.5px;
+      background: var(--accent);
+      border-radius: 1px;
+    }
+    @media (max-width: 540px) {
+      .process-card { padding: 24px 22px; }
+      .process-card-num { font-size: 28px; }
+      .process-card-title { font-size: 16px; }
+    }
+
     /* ===== Process Section — vertical timeline (no scroll-jack) ===== */
     .pss-outer { position: relative; }
     .pss-sticky { display: block; max-width: 920px; margin: 0 auto; }

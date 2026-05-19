@@ -80,9 +80,22 @@ ROMANALABS marketing site — single-page AI consulting agency website at `c:\Us
     - Reimplemented in vanilla CSS (the main site uses Tailwind classes; contact page has no Tailwind dependency). Logo mark uses `filter: invert(1) brightness(2.2)` to render white on the obsidian bg, matching the main site exactly.
     - Stacks single-column on mobile, side-by-side at ≥768px.
 
+23. **Extract shared CSS file** (`a6ee392`) — created `assets/site.css` containing brand tokens + footer styles. Both pages link to it. Killed the duplicate `:root` block and duplicate footer CSS across files.
+
+24. **Architecture overhaul: kill Tailwind CDN, externalize all inline assets** (`ea9e2ac`)
+    - **Pre-built Tailwind via local CLI**: `src/tailwind.in.css` defines `@import "tailwindcss"` + `@theme` tokens (accent/emerald/card/alabaster/fonts/radii) + `@source` globs. `npm run build:css` generates `assets/tailwind.css` (19KB, only used classes). Replaced `<script src="cdn.tailwindcss.com">` with `<link rel="stylesheet">`. Production console: zero warnings.
+    - **Inline blocks externalized**:
+      - `index.html`: 2940 → 750 lines. CSS → `assets/main.css` (1712 lines). JS → `assets/main.js` (464 lines, `defer`).
+      - `contact/index.html`: 720 → 200 lines. CSS → `assets/contact.css`. JS → `assets/contact.js`.
+    - **Build artifact committed** so Cloudflare serves the pre-built CSS directly. No build required on Cloudflare unless user opts in.
+    - **New scripts in package.json**: `build:css`, `watch:css`, `screenshot`.
+    - **README.md created** documenting daily workflow, when to rebuild, Cloudflare auto-build setup.
+    - **CLAUDE.md rewritten** to reflect new architecture for future agents.
+    - **Verified** via screenshot.js — visual render identical before/after.
+
 ## Current State
 - **Branch:** `main`, fully pushed to `origin/main` (clean working tree).
-- **Latest commit:** `14e9b13`
+- **Latest commit:** `ea9e2ac`
 - **Cloudflare Pages:** auto-deploys from `main`. Domain `romanalabs.com`. Verified `romanalabs.com/contact/` returns HTTP 200.
 - **Form is LIVE:** Web3Forms key wired in; submissions go to your inbox.
 - **GitHub auth:** PAT was rotated on 2026-05-19 — old token revoked, new one (`ghp_FUb5Ya…`) wired into the remote URL. **Recommended next step:** move it out of the URL into a credential helper or switch to SSH so it stops showing in `git remote -v` / shell history.

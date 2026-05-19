@@ -1,19 +1,20 @@
 {
+  "name": "romanalabs-website",
+  "version": "1.0.0",
+  "description": "ROMANALABS marketing site",
+  "main": "index.html",
+  "scripts": {
+    "build:css": "tailwindcss -i src/tailwind.in.css -o assets/tailwind.css --minify",
+    "build": "npm run build:css",
+    "watch:css": "tailwindcss -i src/tailwind.in.css -o assets/tailwind.css --watch",
+    "screenshot": "node screenshot.js"
+  },
   "dependencies": {
     "puppeteer": "^24.37.5"
   },
-  "name": "website-builder-example",
-  "version": "1.0.0",
-  "description": "",
-  "main": "screenshot.js",
   "devDependencies": {
+    "@tailwindcss/cli": "^4.3.0",
     "tailwindcss": "^4.2.1"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "type": "commonjs"
 }

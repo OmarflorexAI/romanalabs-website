@@ -1,41 +1,83 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code when working in this repo.
 
 ## What This Is
 
-A single-page marketing website for ROMANLABS (AI consulting agency), built as a single `index.html` with Tailwind CSS via CDN. No build step, no framework — just HTML/CSS/JS.
+ROMANALABS marketing site (AI consulting agency) — two static pages (`/` and `/contact`) served by Cloudflare Pages from this GitHub repo. Domain: `romanalabs.com`.
+
+For deployment, workflow, and Cloudflare auto-build setup, see [README.md](README.md). Read it first if you're touching the build pipeline.
+
+## Architecture (current, post-refactor)
+
+```
+.
+├── index.html             # ~750 lines of pure markup
+├── contact/index.html     # ~200 lines of pure markup
+├── assets/
+│   ├── tailwind.css       # PRE-BUILT Tailwind utilities (only what's used). Commit it.
+│   ├── site.css           # Shared: brand tokens (:root) + footer styles. Loaded by BOTH pages.
+│   ├── main.css           # Main page styles (was inline)
+│   ├── main.js            # Main page scripts (was inline; loaded with defer)
+│   ├── contact.css        # Contact page styles
+│   └── contact.js         # Contact page scripts (loaded with defer)
+├── src/tailwind.in.css    # Tailwind input — @import "tailwindcss" + @theme tokens + @source globs
+├── package.json           # Build scripts (build:css, watch:css, screenshot)
+└── brand_assets/          # Logos, brand images
+```
+
+**No CDN dependencies at runtime.** Tailwind is pre-built locally and committed. Open the live site → DevTools → Console → there should be ZERO warnings.
 
 ## Commands
 
 ```bash
-# Take mobile (423px) + desktop (1440px) screenshots
-node screenshot.js
-
-# Install dependencies (only puppeteer)
-npm install
-
-# Open in browser (Windows)
-start index.html
+npm run build:css     # Regenerate assets/tailwind.css (run after adding new Tailwind classes to HTML)
+npm run watch:css     # Same, auto-rerun on file change
+npm run screenshot    # Puppeteer dual-viewport screenshot → screenshot-{mobile,desktop}.png
 ```
 
-## Architecture
+## When you must rebuild
 
-- `index.html` — The entire site. Tailwind CSS via CDN, custom CSS in `<style>`, all JS in a `<script>` block at the bottom. Sections: Header, Hero, Logo Marquee, About, Case Studies, Services, Stats/Results, Process, Testimonials (slider), CTA, Footer.
-- `screenshot.js` — Puppeteer script that captures full-page screenshots at two viewports. Has a `revealAll()` helper that force-triggers scroll animations and count-up values before capture (IntersectionObserver doesn't fire in static full-page screenshots).
-- `brand_assets/` — Logo PNG and brand guidelines image.
-- `.claude/rules/` — Detailed rules split by concern (see below).
+Run `npm run build:css` and commit the updated `assets/tailwind.css` whenever you:
+- Add a new Tailwind utility class to any HTML file (e.g. `text-xl`, `gap-8`, anything that didn't exist before)
+- Edit `src/tailwind.in.css` (theme tokens, @source globs)
 
-**Gotcha:** The project directory has a space in its name. `screenshot.js` uses URL-encoded `file:///` paths (`%20`) for Puppeteer navigation but literal paths for file output.
+You do NOT need to rebuild when you:
+- Edit content/copy
+- Edit `assets/main.css`, `assets/contact.css`, `assets/site.css`
+- Edit JS files
+- Edit existing Tailwind classes that are already in the HTML (already in the pre-built CSS)
+
+If Cloudflare Pages auto-build is configured (see README), you never need to rebuild locally — Cloudflare does it on every deploy.
+
+## Brand tokens
+
+Source of truth: `assets/site.css` (`:root` block) + `src/tailwind.in.css` (`@theme` block). **Keep them in sync.** Changing a color in one place without the other will produce visual drift.
+
+| Token | Value | Use |
+| --- | --- | --- |
+| `--accent` | `#D4AF37` | Muted gold — CTAs, key metrics, italic emphasis |
+| `--accent-hover` | `#C49B2E` | Hover state for gold elements |
+| `--emerald` | `#1B4332` | British Racing Green — labels, borders, secondary actions |
+| `--bg-primary` | `#F9F9F7` | Soft alabaster — page background |
+| `--bg-card` | `#0A0D0B` | Deep obsidian — footer, dark cards |
+| Heading font | Space Grotesk | Geometric sans, all headings + UI labels |
+| Body font | Inter | Refined sans, all body text |
+
+## Push / deploy gotcha
+
+`git push` over HTTPS sometimes stalls silently on this Windows machine (HTTP/2 multiplexing bug). Workaround: `git -c http.version=HTTP/1.1 push origin main`.
 
 ## Rules
 
-Detailed rules live in `.claude/rules/`:
+Detailed rules live in `.claude/rules/`. Most are still relevant; one is now outdated:
 
-| File | Purpose |
+| File | Status |
 |---|---|
-| `screenshot-workflow.md` | The generate → screenshot → compare → fix → repeat loop. Always do 2+ comparison rounds. |
-| `technical-defaults.md` | Tailwind CDN, `placehold.co` for missing images, mobile-first, single file |
-| `design-fidelity.md` | Match references exactly, don't add features, be specific about pixel mismatches |
-| `puppeteer-screenshots.md` | How `screenshot.js` works — `revealAll()`, viewport sizes, file path encoding |
-| `brand-identity.md` | ROMANLABS tokens: accent `#4A9FE5`, fonts Outfit/DM Sans, logo path, Cal.com link |
+| `screenshot-workflow.md` | Active — use the generate→screenshot→compare→fix loop |
+| `design-fidelity.md` | Active — match references exactly, don't add features |
+| `puppeteer-screenshots.md` | Active — explains `revealAll()` and viewport sizes |
+| `brand-identity.md` | **STALE** — references old palette `#4A9FE5`. Current palette is in this file + `assets/site.css`. |
+| `technical-defaults.md` | **STALE** — says "Tailwind via CDN, single file." Current: pre-built Tailwind + externalized assets. |
+
+**Gotcha (still relevant):** project directory contains a space. `screenshot.js` uses URL-encoded `file:///` paths (`%20`) for Puppeteer navigation but literal paths for file output.

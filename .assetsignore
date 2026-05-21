@@ -4,6 +4,7 @@ node_modules
 .claude
 .wrangler
 src
+*.md
 *.png
 *.jpg
 *.jpeg
@@ -12,8 +13,6 @@ screenshot.js
 package.json
 package-lock.json
 wrangler.jsonc
-progress.md
-CLAUDE.md
 CNAME
 .gitignore
 .assetsignore

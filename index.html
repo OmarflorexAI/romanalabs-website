@@ -953,7 +953,7 @@
       z-index: 10;
     }
     @media (min-width: 768px) { .feature-grid { grid-template-columns: 1fr 1fr; } }
-    @media (min-width: 1024px) { .feature-grid { grid-template-columns: 1fr 1fr 1fr 1fr; } }
+    @media (min-width: 1024px) { .feature-grid { grid-template-columns: 1fr 1fr 1fr; } }
     .feature-card {
       display: flex;
       flex-direction: column;
@@ -963,20 +963,21 @@
       border-bottom: 0.5px solid rgba(18,18,18,0.1);
     }
     /* Remove right border on last column per breakpoint */
-    .feature-card:nth-child(4n) { border-right: none; }
+    .feature-card:nth-child(3n) { border-right: none; }
     @media (max-width: 1023px) {
+      .feature-card { border-right: 0.5px solid rgba(18,18,18,0.1); }
+      .feature-card:nth-child(3n) { border-right: 0.5px solid rgba(18,18,18,0.1); }
       .feature-card:nth-child(2n) { border-right: none; }
-      .feature-card:nth-child(4n) { border-right: 0.5px solid rgba(18,18,18,0.1); }
     }
     @media (max-width: 767px) {
       .feature-card { border-right: none; }
     }
-    /* Remove bottom border on last row */
+    /* Remove bottom border on last row (3 cols → last 3 cards; 2 cols → last 2) */
     @media (min-width: 1024px) {
-      .feature-card:nth-child(n+5) { border-bottom: none; }
+      .feature-card:nth-child(n+4) { border-bottom: none; }
     }
     @media (min-width: 768px) and (max-width: 1023px) {
-      .feature-card:nth-child(n+7) { border-bottom: none; }
+      .feature-card:nth-child(n+5) { border-bottom: none; }
     }
     @media (max-width: 767px) {
       .feature-card:last-child { border-bottom: none; }

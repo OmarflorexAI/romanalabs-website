@@ -442,11 +442,6 @@
     }
     .marquee-track img {
       opacity: 0.85;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-    }
-    .marquee-track img:hover {
-      opacity: 1;
-      transform: scale(1.1) translateY(-3px);
     }
 
     /* ===== Cards ===== */
@@ -1948,7 +1943,7 @@
       <div data-scroll-center class="text-center mb-14">
         <p class="section-label mb-5 reveal">SECURITY</p>
         <h2 class="heading-lg mb-6 reveal reveal-delay-1">Your data is yours. <span class="brand">Built that way from day one.</span></h2>
-        <p class="text-[15px] lg:text-[16px] leading-[1.75] text-[#4A4A4A] max-w-[600px] mx-auto reveal reveal-delay-2">Zero retention by default. Private cloud deploy. Audit-ready by design. Nothing you build with us ever trains anyone else's model.</p>
+        <p class="text-[15px] lg:text-[16px] leading-[1.75] text-[#4A4A4A] max-w-[600px] mx-auto reveal reveal-delay-2">We never store your data, never train on it, and never share it. Everything runs locked, logged, and on your side.</p>
         <div class="flex flex-wrap items-center justify-center gap-3 mt-8 reveal reveal-delay-2">
           <span class="compliance-badge">
             <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
@@ -1969,57 +1964,45 @@
         </div>
       </div>
 
-      <!-- Feature grid with hover effects -->
+      <!-- Feature grid: 6 cards, plain-language copy -->
       <div class="feature-grid reveal">
         <!-- Row 1 (top-row: gradient from bottom) -->
         <div class="feature-card top-row">
           <div class="hover-gradient"></div>
           <div class="fc-icon"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg></div>
-          <div class="fc-title-wrap"><div class="fc-accent-bar"></div><span class="fc-title">End-to-End Encryption</span></div>
-          <p class="fc-desc">AES-256 at rest. TLS 1.3 in transit. Encrypted at every layer — no exceptions.</p>
+          <div class="fc-title-wrap"><div class="fc-accent-bar"></div><span class="fc-title">Your data is locked</span></div>
+          <p class="fc-desc">Your data is scrambled while it travels and while it sits. Even if someone intercepts it, they can't read it.</p>
         </div>
         <div class="feature-card top-row">
           <div class="hover-gradient"></div>
           <div class="fc-icon"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg></div>
-          <div class="fc-title-wrap"><div class="fc-accent-bar"></div><span class="fc-title">Complete Audit Trail</span></div>
-          <p class="fc-desc">Every action logged. Every decision timestamped. Full compliance visibility.</p>
+          <div class="fc-title-wrap"><div class="fc-accent-bar"></div><span class="fc-title">Every action is logged</span></div>
+          <p class="fc-desc">Every move your AI makes is recorded. You can look back any time and see exactly what happened and when.</p>
         </div>
         <div class="feature-card top-row">
           <div class="hover-gradient"></div>
           <div class="fc-icon"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
-          <div class="fc-title-wrap"><div class="fc-accent-bar"></div><span class="fc-title">Zero Data Retention</span></div>
-          <p class="fc-desc">Your data is processed and purged. We never store, train on, or sell your information.</p>
-        </div>
-        <div class="feature-card top-row">
-          <div class="hover-gradient"></div>
-          <div class="fc-icon"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"/></svg></div>
-          <div class="fc-title-wrap"><div class="fc-accent-bar"></div><span class="fc-title">Private Cloud Deploy</span></div>
-          <p class="fc-desc">Run entirely within your own VPC. Your models, your infrastructure, your rules.</p>
+          <div class="fc-title-wrap"><div class="fc-accent-bar"></div><span class="fc-title">We don't keep your data</span></div>
+          <p class="fc-desc">Your data passes through, does its job, and disappears. We never store it, never train on it, never sell it.</p>
         </div>
         <!-- Row 2 (bottom-row: gradient from top) -->
         <div class="feature-card bottom-row">
           <div class="hover-gradient"></div>
-          <div class="fc-icon"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg></div>
-          <div class="fc-title-wrap"><div class="fc-accent-bar"></div><span class="fc-title">Multi-tenant Isolation</span></div>
-          <p class="fc-desc">Strict namespace isolation between tenants. No data crossover, ever.</p>
-        </div>
-        <div class="feature-card bottom-row">
-          <div class="hover-gradient"></div>
-          <div class="fc-icon"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg></div>
-          <div class="fc-title-wrap"><div class="fc-accent-bar"></div><span class="fc-title">24/7 Incident Response</span></div>
-          <p class="fc-desc">Security team on-call around the clock. Median response time under 15 minutes.</p>
+          <div class="fc-icon"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"/></svg></div>
+          <div class="fc-title-wrap"><div class="fc-accent-bar"></div><span class="fc-title">It runs on your side</span></div>
+          <p class="fc-desc">Everything can live on your own servers, not ours. Your information never leaves your walls.</p>
         </div>
         <div class="feature-card bottom-row">
           <div class="hover-gradient"></div>
           <div class="fc-icon"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.204-.107-.397.165-.71.505-.78.929l-.15.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
-          <div class="fc-title-wrap"><div class="fc-accent-bar"></div><span class="fc-title">Role-Based Access</span></div>
-          <p class="fc-desc">Granular RBAC with least-privilege defaults. Every permission is earned, not given.</p>
+          <div class="fc-title-wrap"><div class="fc-accent-bar"></div><span class="fc-title">Only the right people see it</span></div>
+          <p class="fc-desc">You decide who can see what. By default, nobody has access to anything they don't actually need.</p>
         </div>
         <div class="feature-card bottom-row">
           <div class="hover-gradient"></div>
-          <div class="fc-icon"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg></div>
-          <div class="fc-title-wrap"><div class="fc-accent-bar"></div><span class="fc-title">SOC 2 & GDPR</span></div>
-          <p class="fc-desc">Fully compliant with enterprise standards. Audited annually by independent third parties.</p>
+          <div class="fc-icon"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg></div>
+          <div class="fc-title-wrap"><div class="fc-accent-bar"></div><span class="fc-title">We're always watching</span></div>
+          <p class="fc-desc">If anything looks wrong, our team is on it within 15 minutes. Day, night, weekend, holiday — doesn't matter.</p>
         </div>
       </div>
     </div>

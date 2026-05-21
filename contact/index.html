@@ -702,7 +702,10 @@
             successView.style.display = '';
             window.scrollTo({ top: 0, behavior: 'smooth' });
             setTimeout(function() {
-              window.open(CAL_URL, '_blank', 'noopener');
+              var calUrl = CAL_URL
+                + '?name=' + encodeURIComponent(payload.name)
+                + '&email=' + encodeURIComponent(payload.email);
+              window.open(calUrl, '_blank', 'noopener');
             }, 900);
           })
           .catch(function(err) {

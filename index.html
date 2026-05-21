@@ -129,15 +129,16 @@
       position: relative;
       overflow: hidden;
       font-family: 'Inter', sans-serif;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
       color: #0A0D0B;
       background: var(--accent);
       border: none;
-      padding: 10px 24px;
-      border-radius: 10px;
+      padding: 10px 22px;
+      border-radius: 6px;
       text-decoration: none;
-      transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+      box-shadow: 0 2px 8px rgba(212,175,55,0.1), 0 0 0 1px rgba(212,175,55,0.1);
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease, background 0.25s ease;
     }
     .site-header .nav-cta::after {
       content: '';
@@ -156,8 +157,8 @@
     }
     .site-header .nav-cta:hover {
       background: var(--accent-hover);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(212,175,55,0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 18px rgba(212,175,55,0.16), 0 0 0 1px rgba(212,175,55,0.12);
     }
 
     /* Mobile book button (next to hamburger) */

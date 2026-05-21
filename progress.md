@@ -1,6 +1,6 @@
 # Progress Checkpoint
-> Last updated: 2026-05-21 (ninth update — post-Session-7.5: Monk-style final CTA card + large-screen typography scaling) by context-checkpoint skill
-> Context usage at time of checkpoint: ~90%
+> Last updated: 2026-05-21 (tenth update — post-Session-7.6: CTA card v2 vertical gradient, marquee hover removed, security trimmed to 6 plain-language cards in 3×2 grid) by context-checkpoint skill
+> Context usage at time of checkpoint: ~92%
 
 ## Project Overview
 ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\Users\admin\website-romanalabs\`. Pure HTML/CSS/JS, no backend, no database. Domain `romanalabs.com`. **Dual-deployed:** GitHub Pages (primary, serving `romanalabs.com`) AND Cloudflare Workers (`romanalabs-website.samirflores13.workers.dev` — preview only until apex domain is flipped). Lead form ingests to **Make.com webhook**. The site keeps the pre-overhaul setup: Tailwind via CDN runtime + all CSS/JS inline + a single shared `assets/site.css` for brand tokens and footer styles.
@@ -126,11 +126,47 @@ ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\U
       - `@media (min-width: 2200px)`: `.max-content` max-width to 1600px, `heading-xl` to 104px, `heading-lg` to 64px.
     - Reason: on 1920+ displays, content pinned to 1280px felt centered-with-too-much-whitespace, and clamp() typography hit its 72px max too early. Now scales gracefully through 4K.
 
+### Session 7.6 (2026-05-21) — CTA card v2, marquee hover removal, security simplification
+
+44. **CTA card v2: vertical gradient, drop glow + horizontal sprawl** (`1893f9b`). User feedback after v1: "the gradient should go from top to the bottom of the card like in the image. remove the bright logo on the right and the strong light. this makes the card super large horizontally, I want it much smaller, change this. ensure the gradient looks clean, the color could go from a subtle black to the current green."
+    - `.cta-card` background: radial-gold-over-obsidian → **`linear-gradient(180deg, #0A0D0B 0%, #0E1812 55%, #1B4332 100%)`** — vertical, subtle obsidian-at-top into emerald-at-bottom. No glows.
+    - Removed `.cta-glow-mark` `<img>` element and its filter/drop-shadow CSS.
+    - `.cta-card` got `max-width: 920px; margin: 0 auto` — card now centered and ~⅔ the width of the container instead of full-width. Visually much smaller.
+    - Removed `.cta-card-inner max-width:60%` (no glow zone to avoid).
+    - Padding tightened slightly to match the narrower shape.
+    - Chamfered top-right corner via clip-path preserved.
+
+45. **Marquee hover removed** (`9b3b1d7`). User: "remove the hover effect on the marquee section below the hero, we only want to showcase the icons."
+    - Stripped `.marquee-track img:hover { opacity:1; transform: scale(1.1) translateY(-3px); }` from CSS.
+    - Also removed the `transition` from base `.marquee-track img` since it has nothing to transition to now.
+
+46. **Security section trimmed 8 → 6 cards + plain-language rewrite** (`9b3b1d7`). User: "I only want 6 cards in the security section, remove 2 that are unnecessary. these cards seem a bit too tech, someone without knowledge won't what these means, I want that even a 10 year old understands, fix the copy of these cards and section. make it simple to understand."
+    - **Removed 2 cards:**
+      - "Multi-tenant Isolation" — incomprehensible jargon for a $1-10M founder
+      - "SOC 2 & GDPR" — redundant with the compliance badges directly above
+    - **Rewrote remaining 6 cards in plain language:**
+      | Old title | New title |
+      |---|---|
+      | End-to-End Encryption | Your data is locked |
+      | Complete Audit Trail | Every action is logged |
+      | Zero Data Retention | We don't keep your data |
+      | Private Cloud Deploy | It runs on your side |
+      | Role-Based Access | Only the right people see it |
+      | 24/7 Incident Response | We're always watching |
+    - Descriptions stripped of acronyms (AES-256, TLS 1.3, VPC, RBAC) and rewritten with concrete actions (e.g. "scrambled while it travels", "passes through and disappears", "you decide who can see what").
+    - Refreshed section subhead: "We never store your data, never train on it, and never share it. Everything runs locked, logged, and on your side."
+
+47. **Security grid: 4-col → 3-col** (`f07622b`). After trimming to 6 cards, the 4-column desktop grid was leaving cards 5 + 6 alone on the bottom row with empty space to the right. User: "there should 3 cards above and 3 below, fix it."
+    - `.feature-grid` desktop `grid-template-columns: 1fr 1fr 1fr 1fr` → `1fr 1fr 1fr`.
+    - `:nth-child(4n)` (right-border-none) → `:nth-child(3n)` so the rightmost column has no divider.
+    - `:nth-child(n+5)` (bottom-border-none on desktop) → `:nth-child(n+4)` so bottom row (cards 4-6) has no underline.
+    - Tablet (2-col) and mobile (1-col) layouts unchanged.
+
 ## Current State
 
 - **Branch:** `main`, fully pushed to `origin/main` (clean working tree).
-- **Latest commit:** `cef98f5` — Final CTA card redesign + large-screen typography scaling
-- **Session 7 commit chain:** `306ef6f` → `e9f8af2` → `d97cc9a` → `8a6fa54` (checkpoint) → `cef98f5`
+- **Latest commit:** `f07622b` — Security feature grid: 4-col → 3-col layout (3 above, 3 below)
+- **Session 7 commit chain:** `306ef6f` → `e9f8af2` → `d97cc9a` → `8a6fa54` (checkpoint) → `cef98f5` → `6c995c2` (checkpoint) → `1893f9b` → `9b3b1d7` → `f07622b`
 - **Hosting:**
   - **Primary live:** GitHub Pages → `romanalabs.com` (Cloudflare DNS/proxy in front)
   - **Worker preview:** `https://romanalabs-website.samirflores13.workers.dev`
@@ -148,7 +184,8 @@ ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\U
 - **Use cases H2:** "Shipped. Live. *Paying back.*" (untouched)
 - **Process H2:** "How we *work.*" (untouched, runway 420vh)
 - **Security H2:** "Your data is yours. *Built that way from day one.*"
-- **Security sub:** "Zero retention by default. Private cloud deploy. Audit-ready by design. Nothing you build with us ever trains anyone else's model."
+- **Security sub:** "We never store your data, never train on it, and never share it. Everything runs locked, logged, and on your side." (Session 7.6)
+- **Security cards (6 total, 3×2 grid):** "Your data is locked" / "Every action is logged" / "We don't keep your data" / "It runs on your side" / "Only the right people see it" / "We're always watching" (Session 7.6 — plain-language rewrite)
 - **Final CTA H2:** "Find the places AI *pays you back fastest.*" (Session 7.5 — shortened)
 - **Final CTA sub:** "An AI strategy session that uncovers your three highest-leverage opportunities and maps the build plan for the first one. Free. 30 minutes." (Session 7.5)
 - **Footer tagline:** "Scale the business. Not the headcount. AI systems your team owns, live in 4 weeks."
@@ -197,12 +234,16 @@ ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\U
 - **Tone:** simple, clever, declarative. Parallel-structure rhythm.
 - **Hero H1 is unlocked.** Current: "Scale the business. *Not the headcount.*"
 
-### Session 7.5 NEW context
+### Session 7.5 / 7.6 NEW context
 
-- **Final CTA card uses a chamfered top-right corner via clip-path.** Real CSS borders DO NOT render on clip-path elements — that's why there's a `::before` pseudo-element with `inset 0 0 0 1px rgba(255,255,255,0.07)` box-shadow and matching clip-path. If a future agent tries to add a normal `border:` to `.cta-card`, it won't show.
-- **Card uses our existing palette only.** User was explicit: do NOT change colors. The radial gradient is gold (`rgba(212, 175, 55, 0.18)` at most) layered over obsidian. Glow mark filter is a hue-shift-to-gold + drop-shadow stack.
+- **Final CTA card** is now a vertical gradient (obsidian → emerald), max-width 920px, centered. No glow mark, no radial light. User iterated twice on this — v1 had a gold radial + glowing logo on the right, v2 stripped both. Final state is the simpler/cleaner one.
+- **CTA card uses a chamfered top-right corner via clip-path.** Real CSS borders DO NOT render on clip-path elements — that's why there's a `::before` pseudo-element with `inset 0 0 0 1px rgba(255,255,255,0.06)` box-shadow and matching clip-path. If a future agent tries to add a normal `border:` to `.cta-card`, it won't show.
+- **Card uses our existing palette only.** User explicit: do NOT change colors. Gradient stops are `#0A0D0B → #0E1812 → #1B4332` (all from our obsidian/emerald range).
 - **Large-screen typography boost (1600px / 2200px breakpoints).** Don't undo this. Reason: on 1920+ displays the site previously felt small because `.max-content` was pinned to 1280px and typography clamps maxed at 72px. The new breakpoints lift both ceilings.
-- **`.max-content` is now 1400px default** (was 1280px). Some legacy assumptions about content width may need verification if you add new full-width sections.
+- **`.max-content` is now 1400px default** (was 1280px).
+- **Security feature grid is 3-column on desktop** (`1fr 1fr 1fr`), not 4. If a future agent adds a 7th security card, the bottom row math (`:nth-child(n+4)` border-bottom-none) will break. Either keep it at exactly 6, or update the `:nth-child` numbers to match new card count.
+- **Security card copy MUST stay plain-language.** User explicit: "even a 10 year old understands." No acronyms (AES, TLS, VPC, RBAC, SOC, ISO, GDPR — except in the compliance badges section). Use concrete verbs ("scrambled", "passes through", "decide who can see").
+- **Marquee logos have no hover effect.** User direction: "we only want to showcase the icons." Don't reintroduce scale/lift on hover.
 
 ### Session 7 NEW context
 

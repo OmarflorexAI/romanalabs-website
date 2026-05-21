@@ -1,5 +1,5 @@
 # Progress Checkpoint
-> Last updated: 2026-05-20 (seventh update — post-Session-6.5: copy rewrite pass with simpler-cleverer positioning voice) by context-checkpoint skill
+> Last updated: 2026-05-21 (eighth update — post-Session-7: Make automation design, navbar polish, Cal.com URL prefill, backend hardening notes, .md leak fix) by context-checkpoint skill
 > Context usage at time of checkpoint: ~85%
 
 ## Project Overview
@@ -49,73 +49,76 @@ ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\U
 ### Session 6 (2026-05-19 → 2026-05-20) — UX polish, real case studies, Make webhook, Cloudflare dual-deploy, Clairvo-style copy v1
 
 28. **`npm audit fix`** — 0 vulns remaining, removed 26 unused packages.
-
-29. **Rectangular CTAs + scroll-center fix + process panel collision fix** (`6ff984b`):
-    - All buttons: `rounded-full`/`rounded-lg` → `rounded-md` (6px). `.btn-secondary` border-radius `9999px` → `6px`.
-    - "View case studies" anchor targets a `data-scroll-center` wrapper around section header + bento grid.
-    - Process scroll: tightened crossfade window.
-
+29. Rectangular CTAs + scroll-center fix + process panel collision fix (`6ff984b`).
 30. **Real case studies + nav trim + process scroll rework + Make webhook** (`7ded3d3`):
-    - Case study cards replaced with real clients: **BANEGAS Real Estate** (lead qualification, 600+ leads/mo, <2 min response), **XIOS** ($180K recovered, 3wk deploy, 38% less cart abandonment), **3P Jewelry** (80+ creative assets, 2.4x ROAS lift).
+    - Case study cards replaced with real clients: **BANEGAS Real Estate**, **XIOS**, **3P Jewelry**.
     - Industry badge removed. Business name centered white at top of each card.
-    - Navbar trim: removed `About` + `Results` links (desktop + mobile).
-    - Entire Scoreboard section deleted (`id="results"` block).
-    - "PROCESS" eyebrow above "How we work." removed.
-    - Process & Security tabs center-scroll on their headings.
-    - Process sticky-scroll runway extended for deliberate per-step dwell. Final: 420vh.
-    - Process panels: smoothstep-eased opacity + continuous gentle slide.
-    - **Form → Make.com webhook:** contact form POSTs JSON to `https://hook.us2.make.com/0q6okwf87as8axjjnidu67m87w9roul5`. Web3Forms references fully removed.
-
+    - Navbar trim: removed `About` + `Results` links.
+    - Entire Scoreboard section deleted.
+    - Process sticky-scroll runway: 420vh (final).
+    - **Form → Make.com webhook:** contact form POSTs JSON to `https://hook.us2.make.com/0q6okwf87as8axjjnidu67m87w9roul5`. Web3Forms fully removed.
 31. **Clean /contact URL + Cloudflare Workers config** (`f882b4b`):
-    - All CTA links: `contact/index.html` → `contact/`. Browser URL bar shows clean `/contact/`.
-    - Added `wrangler.jsonc` — Cloudflare Workers static-assets deploy.
-    - Added `.assetsignore` excluding node_modules, .git, .claude, screenshots, dev configs. Fixed **85 MiB `workerd.exe` upload error**.
-    - **First Cloudflare deploy** to `https://romanalabs-website.samirflores13.workers.dev`.
+    - All CTA links: `contact/index.html` → `contact/`.
+    - Added `wrangler.jsonc`. Added `.assetsignore` (fixed the 85 MiB `workerd.exe` upload error).
+    - First Cloudflare deploy.
+32. **"Get in Touch" CTAs + fix process panel blur at rest** (`7154f1d`):
+    - Blur fix: `transform: none` + `will-change: auto` when panel is active.
+    - All 5 CTAs unified to **"Get in Touch"**.
+33. Clairvo-style copy rewrite v1 (`f0b0130`).
 
-32. **"Get in Touch" CTAs + fix process panel blur at rest + first-pass copy refinements** (`7154f1d`):
-    - **Blur fix on process scroll:** when a panel is the active one (`dist ≤ 0.02`), JS sets `transform: none` + `will-change: auto`, dropping the GPU compositor layer. Otherwise `translateY` rounded to integer px. Fixes "blurry text at rest" artifact on final step.
-    - All 5 CTAs unified to **"Get in Touch"** — nav desktop, mobile, hero, case-studies, final CTA.
-    - First-pass copy refinements (later sharpened then rewritten).
+### Session 6.5 (2026-05-20) — Copy rewrite v2: positioning-led voice (`aadf2ad`)
 
-33. **Clairvo-style copy rewrite v1 — named villain, founder-anchored pain** (`f0b0130`):
-    - User answered 4 clarifying questions: buyer = **$1–10M founder/CEO**, pain anchor = **dollars lost to slow response / leakage**, villain = **'AI agencies' wrapping ChatGPT and charging $20K/mo**, tone = **Clairvo-direct: blunt but professional**.
-    - Hero H1 unlocked. New H1: "AI agencies sell prompts. We ship systems."
-    - Hero subhead led with leakage anchor (every hour a lead waits, abandoned carts).
-    - Problem H2: "Your AI agency is selling you ChatGPT in a trench coat."
-    - Final CTA H2: "Your competitors are shipping AI. You're still paying for prompts."
-    - User direction: minimize em dashes.
+34. User feedback: "simple yet clever, positioning is everything, we don't want to be like everybody else." Broadened pain frame from leads/carts → "bottlenecks / systems" (we do all AI automation).
+    - **Hero H1:** "AI agencies sell prompts. We ship systems." → **"Scale the business. Not the headcount."**
+    - Hero sub, problem H2, security H2, final CTA H2 all rewritten in parallel-structure declaratives.
+    - Footer taglines + meta description aligned.
 
-### Session 6.5 (2026-05-20) — Copy rewrite pass: simpler-cleverer positioning voice
+### Session 7 (2026-05-20 → 2026-05-21) — Make automation plan, navbar polish, Cal.com prefill, backend notes
 
-34. **Hero/problem/security/CTA copy rewrite** (`aadf2ad`):
-    - User feedback: too much lead/cart language (we do all AI automation, not just CRM/checkout); problem and security headers felt "cringe"; wanted copy "so simple and at the same time so clever that anyone can understand and say 'hmm — I'm interested in this'"; positioning over villain-attack.
-    - **Hero H1:** "AI agencies sell prompts. We ship systems." → **"Scale the business. Not the headcount."** User offered two options; I picked option A ("scale without headcount") over option B ("Your definitive AI Partner for the next 10 years") because A names the founder's silent goal in 6 words, B reads as LinkedIn-fluff. Sharpened A from 8 words → 6 words with parallel structure matching site rhetoric.
-    - **Hero sub:** broadened from leads/carts → "bottlenecks / systems." Used user's draft as base: "We turn your everyday bottlenecks into AI systems that ship, run, and pay for themselves. Live in 4 weeks. No tech team required." (AIDA: attention via "bottleneck" relatability, interest via "AI systems," desire via "ship/run/pay for themselves" triplet, curiosity via "no tech team required.")
-    - **Problem H2:** "ChatGPT in a trench coat" → **"AI is easy to demo. Hard to ship."** Universal truth every founder has lived. Sets up the 4 stat cards (kept intact — real cited %s).
-    - **Problem sub:** dropped Zapier/Notion/$20K-invoice trench-coat continuation. New: "85% of AI projects never make it to production. They look great in a demo and break the moment real data and real users show up. Here's where the money leaks." Kept the 85% anchor.
-    - **Security H2:** "Your data never trains anyone's model. Not even ours." → **"Your data is yours. Built that way from day one."** Positive frame instead of defensive. "Built that way" implies architecture, not policy.
-    - **Security sub:** folded "no training" line in as a detail, not a headline. New: "Zero retention by default. Private cloud deploy. Audit-ready by design. Nothing you build with us ever trains anyone else's model."
-    - **Final CTA H2:** "Your competitors are shipping AI. You're still paying for prompts." → **"Find the three places AI pays you back fastest."** Forward-looking, curiosity-driven instead of antagonistic.
-    - **Final CTA sub:** "30 minutes" → "A 30-minute strategy session." Reads more credible. "Highest-ROI" → "highest-leverage" (less corporate).
-    - **Footer taglines** (both pages) updated: "Scale the business. Not the headcount. AI systems your team owns, live in 4 weeks."
-    - **Meta description:** "We build the AI systems that help you scale without hiring. Live in 4 weeks. Owned by your team."
+35. **Make.com lead-capture automation — full plan written** at `C:\Users\admin\.claude\plans\harmonic-shimmying-noodle.md`. **NOT a code change** — designs a 4-module Make scenario (Webhook → Gemini → Router → [Airtable + Gmail]). User answered clarifying questions:
+    - Storage: **Airtable** (note: plan originally drafted with Notion when user asked about Notion, then swapped to Airtable when user clarified they wanted Airtable. User said "I already have all my databases ready" → meaning they have their general Notion CRM but want a dedicated Airtable base for the lead pipeline.)
+    - Notification: **Email** (Gmail module → `omar@romanalabs.com`)
+    - AI qualification: **Yes** — use Gemini to score 1-5, summarize, and draft suggested reply
+    - LLM: User chose **Gemini** (originally I recommended Claude Haiku 4.5; user picked Gemini in Make)
+    - Plan approved by user. Implementation is in Make.com UI + Airtable UI (no code changes required).
+
+36. **Three prompts delivered to user** (in chat, copyable):
+    - **Airtable database scaffolding prompt** — CO-STAR-structured, defines 17 fields + 3 views (Triage / Active Pipeline / Closed). User to paste into Airtable's Cobuilder/Omni or use as manual build spec.
+    - **Gemini lead-qualification prompt** — Role + Task + Context + Scoring rubric + Few-shot examples (3 examples covering score 5, 3, 1). Output is strict JSON: `{score, summary, suggested_reply}`. Designed for Gemini's `response_mime_type: application/json` + `response_schema` enforcement.
+    - **Email templates** — internal notification HTML email (with AI score in subject) + 3 example reply drafts by score band + future "confirmation to lead" template.
+
+37. **Walked user through Make Gemini module config** in chat (screenshots). Key fixes:
+    - Messages → Item 1 → Role: changed from "Model" to **User**
+    - Parts → added Item with Type=Text, mapping the 6 input variables (`{{1.name}}`, `{{1.email}}`, etc.) from the webhook
+    - Clarified: System Instructions = scaffolding (role, rubric, examples, output format). Messages Parts = the actual lead data per call.
+
+38. **Cal.com double-form friction discussion**. User flagged: their contact form asks for 6 fields, then Cal.com asks for 7+ more fields (incl. monthly rev which is invasive). Recommended:
+    - **Strip the Cal.com event** down to Name + Email + Phone + time slot only. Delete Business Website, "What does your business do", "What made you want to contact us", Monthly rev. (User does this in Cal dashboard — not code.)
+    - **Prefill name + email in the Cal.com URL** so lead lands with those already filled.
+
+39. **Navbar CTA matches hero btn-shine + Cal.com URL prefill** (`306ef6f`):
+    - Navbar "Get in Touch" button: `border-radius: 10px → 6px` (matches hero `rounded-md`), added base outline glow `box-shadow: 0 2px 8px rgba(212,175,55,0.1), 0 0 0 1px rgba(212,175,55,0.1)`, font-size `13 → 14px`, hover `translateY(-1px) → translateY(-2px)`. Same gold/shimmer/lift as hero, at navbar scale.
+    - `contact/index.html` form JS: after successful submit, builds `calUrl = CAL_URL + '?name=' + encodeURIComponent(payload.name) + '&email=' + encodeURIComponent(payload.email)` before `window.open(...)`. Lead lands on Cal.com with name + email already populated.
+
+40. **Backend & hardening reference doc** (`e9f8af2`, then `d97cc9a` for leak fix):
+    - Created `BACKEND_AND_HARDENING_NOTES.md` at project root — TL;DR (no backend needed at current scale), 3 priority hardenings (Turnstile / Worker proxy / **privacy policy — HIGH**), and the optional `submission_id: crypto.randomUUID()` pattern with exact implementation snippets.
+    - **Leak fix**: file was uploaded by `wrangler deploy` to the public Worker (URL: `*.workers.dev/BACKEND_AND_HARDENING_NOTES.md` was fetchable). Updated `.assetsignore`: replaced individual `progress.md` + `CLAUDE.md` entries with `*.md` glob to catch all internal markdown going forward. Redeployed. Verified the file 404s on the Worker.
+
+41. **Submission ID discussion**: user asked if a unique per-submission ID is necessary. Answered: not necessary (Make + Airtable already generate IDs) but worth adding for traceability/dedup/audit/GDPR. Cost is 3 lines of JS + 1 Airtable field. **Not yet implemented** — user has the implementation in `BACKEND_AND_HARDENING_NOTES.md` and can ship when ready.
 
 ## Current State
 
-- **Branch:** `main`, fully pushed to `origin/main` (clean working tree after Session 6.5 commit).
-- **Latest commit:** `aadf2ad` — Hero/problem/security/CTA copy: simpler, cleverer, founder-positioned
-- **Session 6.x commit chain:** `6ff984b` → `7ded3d3` → `f882b4b` → `7154f1d` → `f0b0130` → `aadf2ad`
+- **Branch:** `main`, fully pushed to `origin/main` (clean working tree).
+- **Latest commit:** `d97cc9a` — Block all .md from Cloudflare Worker deploys
+- **Session 7 commit chain:** `306ef6f` → `e9f8af2` → `d97cc9a`
 - **Hosting:**
   - **Primary live:** GitHub Pages → `romanalabs.com` (Cloudflare DNS/proxy in front)
-  - **Worker preview:** `https://romanalabs-website.samirflores13.workers.dev` (Cloudflare Workers static-assets deploy via wrangler)
-  - Worker **not yet bound** to the apex domain. To flip: Cloudflare dashboard → Workers & Pages → `romanalabs-website` → Settings → Domains & Routes → Add Custom Domain → `romanalabs.com`.
-- **Architecture (post-Session-6.5):**
-  - `index.html`: ~2370 lines. All CSS/JS inline + Tailwind CDN runtime.
-  - `contact/index.html`: ~720 lines. Form POSTs JSON to Make.com webhook.
-  - `assets/site.css`: 133 lines (shared `:root` brand tokens + footer styles).
-  - `wrangler.jsonc` + `.assetsignore` — Cloudflare Workers deploy config.
-- **Form is LIVE** — POSTs JSON to `https://hook.us2.make.com/0q6okwf87as8axjjnidu67m87w9roul5`.
-- **Cache-bust query strings (`?v=4`)** still on asset URLs. No bump needed in Session 6.5 (only inline HTML edits).
+  - **Worker preview:** `https://romanalabs-website.samirflores13.workers.dev`
+  - Worker is **not yet bound** to the apex domain. To flip: Cloudflare dashboard → Workers & Pages → `romanalabs-website` → Settings → Domains & Routes → Add Custom Domain → `romanalabs.com`.
+- **`.assetsignore`** now uses `*.md` glob — `progress.md`, `CLAUDE.md`, `BACKEND_AND_HARDENING_NOTES.md`, and any future markdown are all blocked from public Worker.
+- **Form is LIVE** — POSTs JSON to Make webhook. After successful submit, opens `https://cal.com/omar-flores/discovery?name={name}&email={email}` in a new tab.
+- **Cache-bust query strings (`?v=4`)** still on asset URLs. No bump needed in Session 7 (only inline HTML edits + .assetsignore).
+- **Make scenario status:** designed and prompts/templates delivered to user. **User is currently building it in Make.com UI.** Last seen mid-config of the Gemini module (Messages → User → Parts → Text mapping).
 
 ### Current copy (the unifying story top-to-bottom)
 - **H1:** "Scale the business. *Not the headcount.*"
@@ -123,29 +126,39 @@ ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\U
 - **Problem H2:** "AI is easy to demo. *Hard to ship.*"
 - **Problem sub:** "85% of AI projects never make it to production. They look great in a demo and break the moment real data and real users show up. Here's where the money leaks."
 - **Use cases H2:** "Shipped. Live. *Paying back.*" (untouched)
-- **Process H2:** "How we *work.*" (untouched)
+- **Process H2:** "How we *work.*" (untouched, runway 420vh)
 - **Security H2:** "Your data is yours. *Built that way from day one.*"
+- **Security sub:** "Zero retention by default. Private cloud deploy. Audit-ready by design. Nothing you build with us ever trains anyone else's model."
 - **Final CTA H2:** "Find the three places AI *pays you back fastest.*"
 - **Final CTA sub:** "A 30-minute strategy session. Free. We map the three highest-leverage AI systems in your business and build the first one in 4 weeks. No deck. No retainer."
 - **Footer tagline:** "Scale the business. Not the headcount. AI systems your team owns, live in 4 weeks."
 
 ## What Comes Next
 
-### High priority
+### User actions (Make.com / Airtable / Cal.com — not code)
 
-1. **Flip apex domain to the Cloudflare Worker.** Currently `romanalabs.com` is served by GitHub Pages. Worker is deployed and tested at `*.workers.dev`. To flip: Cloudflare dashboard → Workers & Pages → `romanalabs-website` → Settings → Domains & Routes → Add Custom Domain `romanalabs.com` (and `www.romanalabs.com`).
-2. **Verify the Make.com scenario is wired up.** Open Make scenario, click "Run once" to put in listening mode, submit test from `romanalabs.com/contact/`. Locks data structure. After that the scenario runs normally.
+1. **Finish building the Make.com scenario.** Plan and prompts in `C:\Users\admin\.claude\plans\harmonic-shimmying-noodle.md`. Currently mid-config of the Gemini module — need to complete: Gemini JSON schema, Router, Airtable Create Record, Gmail Send Email. After all modules wired, run "Run once" + submit a test from `romanalabs.com/contact/`.
+2. **Build the Airtable base** using the CO-STAR prompt delivered in chat. 17 fields, 3 views. Make module will fail to map until this exists.
+3. **Strip the Cal.com event** down to Name + Email + Phone + time slot only. Delete: Business Website, "What does your business do", "What made you want to contact us", Monthly rev. (Cal dashboard → Event Types → Growth Mapping Call → Questions.)
+4. **Flip apex domain to the Cloudflare Worker.** Cloudflare dashboard → Workers & Pages → `romanalabs-website` → Settings → Domains & Routes → Add Custom Domain.
 
-### Lower priority / when user provides input
+### Code changes (priority order)
 
-3. **X/Twitter footer URL** — still `href="#"` on both pages. Waiting on real handle.
-4. **Self-host fonts** (Audit Finding #9.5) — replace Google Fonts CDN with locally-hosted `.woff2` files. ~30 min, eliminates last 3rd-party CSS request.
-5. **Compliance badge verification** (SOC 2 / ISO 27001 / GDPR / Zero-Knowledge Infra in security section). User to confirm which are actually held.
-6. **Case study metric confirmation** — current numbers (BANEGAS 600+ leads/mo, XIOS $180K, 3P 80+ assets) need user verification they're accurate to delivered work.
+5. **Privacy policy page** (`/privacy/index.html`) + footer link back + consent line on the contact form. **HIGH PRIORITY — real GDPR/CCPA gap.** Detailed in `BACKEND_AND_HARDENING_NOTES.md`. ~1-2 hours.
+6. **Submission ID** (`submission_id: crypto.randomUUID()` in payload + Airtable field + Make mapping). Cheap traceability win. Code snippet ready in `BACKEND_AND_HARDENING_NOTES.md`.
+7. **Cloudflare Turnstile** when spam appears (not before).
 
-### Bigger optional moves
+### Waiting on user input
 
-7. **Decide on retiring GitHub Pages** once Cloudflare apex flip is verified. Both deploys currently stay in sync = wasted work.
+8. **X/Twitter footer URL** — still `href="#"` on both pages.
+9. **Compliance badge verification** (SOC 2 / ISO 27001 / GDPR / Zero-Knowledge Infra in security section). Confirm which are actually held; don't fabricate.
+10. **Case study metric confirmation** (BANEGAS 600+ leads/mo, XIOS $180K, 3P 80+ assets). Site is live with these numbers.
+
+### Optional / later
+
+11. **Webhook proxy behind Cloudflare Worker route** — only if direct webhook abuse appears.
+12. **Self-host fonts** — replace Google Fonts CDN with `.woff2` files in `/brand_assets/fonts/`.
+13. **Decide on retiring GitHub Pages** once Cloudflare apex flip is verified.
 
 ## Active Decisions & Context
 
@@ -154,25 +167,33 @@ ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\U
 - **"I DID NOT TELL YOU TO DO THIS."** — user pushed back against unauthorized big changes. **Do only what the user asks, in the scope they ask.** Check before any change touching more than the specific element/file they mentioned.
 - **"I want the site to look good. this is trash. avoid keeping it the same."** — visual-quality complaints get targeted fixes, not architectural ones.
 - **"a few [em dashes] are good, not too many"** (Session 6) — default to splitting em-dash sentences into 2 declaratives.
-- **"the copy [should be] so simple and at the same time so clever that anyone can understand and say: 'hmm — i'm interested in this'. positioning is everything. we don't want to be like everybody else."** (Session 6.5) — this is the voice north star. Simple words, clever framing, distinctive positioning. Not LinkedIn-fluff. Not contrarian for its own sake. The new H1 "Scale the business. Not the headcount." passes this test.
+- **"the copy [should be] so simple and at the same time so clever that anyone can understand and say: 'hmm — i'm interested in this'. positioning is everything. we don't want to be like everybody else."** (Session 6.5) — voice north star. Simple words, clever framing, distinctive positioning. Not LinkedIn-fluff. Not contrarian for its own sake.
 
 ### Buyer / villain / tone (CONFIRMED in Session 6, evolved in 6.5)
 
 - **Buyer:** $1–10M founder/CEO.
-- **Pain frame (BROADENED in Session 6.5):** was "leads going cold / carts abandoned" → now **"everyday bottlenecks" / "AI systems"** (we do all AI automation, not just CRM/checkout). The leads/carts narrative is fine for case studies but NOT for the hero/problem framing. Use "bottlenecks", "systems", "operations" instead.
-- **Villain (DE-EMPHASIZED in Session 6.5):** the "$20K/mo ChatGPT-wrapper AI agency" villain is still real but we no longer lead headlines with it. The new H1, problem H2, and final CTA are positioning-led, not attack-led. The 85% pilot-death stat is the only remaining villain anchor in the copy.
-- **Tone (CONFIRMED):** simple, clever, declarative. Match the parallel-structure rhythm of "Scale the business. Not the headcount." / "AI is easy to demo. Hard to ship." / "Your data is yours. Built that way from day one."
-- **Hero H1 is unlocked.** Current: "Scale the business. *Not the headcount.*" (brand-serif span on the second half).
+- **Pain frame (BROADENED in Session 6.5):** "everyday bottlenecks" / "AI systems" — broader than leads/carts. Use these terms in hero/problem framing.
+- **Villain (DE-EMPHASIZED in Session 6.5):** the $20K/mo ChatGPT-wrapper agency frame is still real but no longer leads headlines. The 85% pilot-death stat is the remaining villain anchor.
+- **Tone:** simple, clever, declarative. Parallel-structure rhythm.
+- **Hero H1 is unlocked.** Current: "Scale the business. *Not the headcount.*"
 
-### Architectural decisions
+### Session 7 NEW context
+
+- **Make scenario architecture** (designed, partially built): Webhook → Gemini (JSON output via `response_mime_type` + `response_schema`) → Router → [Airtable Create Record] + [Gmail Send Email]. ~4 operations per lead. Make free tier (1000 ops/mo) covers ~250 leads/mo.
+- **Gemini config in Make:** Messages role = `User` (NOT Model). System Instructions = the scaffolding (role/rubric/examples/output). Parts = mapped input variables from webhook. User got tripped up on this — Role defaults to "Model" which is wrong for a single-turn request.
+- **Cal.com URL prefill** is now LIVE in the contact form JS. After successful submit, `window.open` constructs `?name=...&email=...` query params from the payload, so the lead lands on Cal with name + email pre-filled.
+- **`.md` files must NEVER be uploaded to the Cloudflare Worker.** The `.assetsignore` now uses `*.md` glob. If a future agent adds a new internal markdown file (READMEs, plans, notes), it's automatically excluded. **DO NOT** override this without explicit user permission — `BACKEND_AND_HARDENING_NOTES.md` once leaked publicly because the ignore list was specific-names-only, not a glob.
+- **Backend hardening priorities** (in `BACKEND_AND_HARDENING_NOTES.md`): privacy policy (HIGH), submission_id (cheap traceability win), Turnstile (when spam appears), Worker proxy (only if needed).
+
+### Architectural decisions (from prior sessions, still active)
 
 - **DO NOT externalize inline CSS or JS again** without testing in production first. Pre-built Tailwind misses utilities the CDN's JIT generates from the live DOM → silent visual breakage. Tried (`ea9e2ac`), broke, reverted (`bc23e51`).
 - **Tailwind CDN runtime warning is acceptable.** User explicitly chose this trade-off.
-- **Hosting is dual-deployed.** GitHub Pages serves the live `romanalabs.com`; Cloudflare Worker is a preview. After apex flip, GH Pages can be retired.
-- **`.assetsignore` is REQUIRED for any `npx wrangler deploy`** — without it, node_modules gets included and the 85 MiB `workerd.exe` blows the 25 MiB asset size limit.
-- **Cache-bust query strings (`?v=N`) are still the working cache-invalidation mechanism on GH Pages.** Bump `?v=N` to `?v=N+1` whenever `assets/site.css` changes.
+- **Hosting is dual-deployed.** GitHub Pages serves live; Cloudflare Worker is preview. After apex flip, GH Pages can be retired.
+- **`.assetsignore` REQUIRED for `npx wrangler deploy`** — without it, node_modules' 85 MiB `workerd.exe` blows the 25 MiB asset size limit.
+- **Cache-bust query strings (`?v=N`) are the working cache-invalidation mechanism on GH Pages.** Bump `?v=N` to `?v=N+1` whenever `assets/site.css` changes.
 
-### Make.com webhook integration (Session 6)
+### Make.com webhook integration
 
 - **Endpoint:** `https://hook.us2.make.com/0q6okwf87as8axjjnidu67m87w9roul5`
 - **Method:** POST with `Content-Type: application/json`
@@ -192,58 +213,61 @@ ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\U
     "user_agent": "navigator.userAgent"
   }
   ```
-- `goals` is a true array (not comma-joined string) so the Make scenario can iterate without re-parsing.
-- Make webhooks return HTTP 200 with body "Accepted" on success. Code checks `r.ok` (not `.json()`).
-- On success: form view hidden, success view shown, Cal.com (`https://cal.com/omar-flores/discovery`) opens in a new tab after 900ms.
+- `goals` is a true array.
+- Make webhooks return HTTP 200 "Accepted" on success. Code checks `r.ok` (not `.json()`).
+- On success: form view hidden, success view shown, **Cal.com with `?name=&email=` prefill** opens in new tab after 900ms.
 
 ### Workflow gotchas
 
-- **Push:** `git -c http.version=HTTP/1.1 push origin main` (HTTP/2 stall workaround on this Windows machine).
-- **Wrangler deploy:** `npx wrangler deploy` from project root. `.assetsignore` filters node_modules etc. Worker URL: `romanalabs-website.samirflores13.workers.dev`.
-- **Local preview:** opening `index.html` via `file://` — server-absolute paths don't resolve. Asset paths are relative for this reason.
-- **Screenshot script** (`npm run screenshot`) only does `index.html` (not `/contact`). Mobile (423px) + desktop (1440px).
+- **Push:** `git -c http.version=HTTP/1.1 push origin main` (HTTP/2 stall on Windows).
+- **Wrangler deploy:** `npx wrangler deploy` from project root.
+- **Local preview:** `file://` doesn't resolve server-absolute paths. Assets use relative paths.
+- **Screenshot script** (`npm run screenshot`) — `index.html` only (not `/contact`). Mobile 423px + desktop 1440px.
+- **`.assetsignore` is glob-aware.** Use globs (`*.md`) over specific names where possible to avoid future leaks.
 
 ## Key Files
 
-- [index.html](index.html) — main page (~2370 lines): full inline `<style>` + `<script>`. Loads Tailwind via CDN runtime. Sections: hero, logo marquee, problem cards (4 stat cards intact), case studies (real: BANEGAS / XIOS / 3P Jewelry), process (sticky-scroll, 420vh runway), security, final CTA, footer.
-- [contact/index.html](contact/index.html) — `/contact` page (~720 lines): 6-field lead form POSTing JSON to Make.com webhook.
-- [assets/site.css](assets/site.css) — only external CSS file (~133 lines). Shared `:root` brand tokens + footer styles.
+- [index.html](index.html) — main page (~2370 lines): full inline `<style>` + `<script>`. Tailwind via CDN. Sections: hero, logo marquee, problem cards, case studies (BANEGAS / XIOS / 3P Jewelry), process (sticky 420vh runway), security, final CTA, footer.
+- [contact/index.html](contact/index.html) — `/contact` (~720 lines): 6-field lead form POSTing JSON to Make. Cal.com opens with name/email URL prefill.
+- [assets/site.css](assets/site.css) — only external CSS (~133 lines). Shared `:root` tokens + footer styles.
 - [wrangler.jsonc](wrangler.jsonc) — Cloudflare Workers deploy config. `name: "romanalabs-website"`, `assets.directory: "."`.
-- [.assetsignore](.assetsignore) — wrangler-only ignore file. Excludes node_modules, .git, screenshots, dev configs. REQUIRED.
-- [package.json](package.json) — devDeps: puppeteer (screenshot script). No build scripts.
-- [screenshot.js](screenshot.js) — Puppeteer dual-viewport (423px / 1440px) full-page screenshot tool.
-- [CNAME](CNAME) — `romanalabs.com` (GitHub Pages custom domain marker).
-- [CLAUDE.md](CLAUDE.md) — current-architecture docs + HARD CONSTRAINTS. Refreshed in Session 5. **Stale on Session 6/6.5 changes** (new H1, villain de-emphasis, dual-deploy).
-- [.claude/CLAUDE.md](.claude/CLAUDE.md) + [.claude/rules/*.md](.claude/rules/) — session rules. `.claude/rules/brand-identity.md` refreshed in Session 5.
+- [.assetsignore](.assetsignore) — wrangler ignore. Uses `*.md` glob for all markdown. REQUIRED for deploy.
+- [BACKEND_AND_HARDENING_NOTES.md](BACKEND_AND_HARDENING_NOTES.md) — reference doc on backend question, 3 hardening priorities, and `submission_id` implementation. Internal-only — blocked from Worker by `.assetsignore`.
+- [package.json](package.json) — devDeps: puppeteer only. No build scripts.
+- [screenshot.js](screenshot.js) — Puppeteer dual-viewport tool.
+- [CNAME](CNAME) — `romanalabs.com` (GH Pages custom domain).
+- [CLAUDE.md](CLAUDE.md) — current-architecture docs + HARD CONSTRAINTS. **Stale on Session 6/6.5/7 changes** (new H1, voice, dual-deploy, Cal prefill).
+- [.claude/CLAUDE.md](.claude/CLAUDE.md) + [.claude/rules/*.md](.claude/rules/) — session rules.
 - [progress.md](progress.md) — this file.
+- **External:** [C:\Users\admin\.claude\plans\harmonic-shimmying-noodle.md](C:\Users\admin\.claude\plans\harmonic-shimmying-noodle.md) — Make.com automation plan (approved by user).
 
 **Deleted in Session 5 (don't re-create):** `_headers`, `netlify.toml`, old `README.md`, `nul`, 4 unreferenced brand_assets PNGs.
 
-**Removed in Session 6/6.5:** Web3Forms references, "About" + "Results" nav links, entire Scoreboard section, "PROCESS" eyebrow, dormant lead-capture modal (Session 5).
+**Removed in Session 6/6.5:** Web3Forms references, "About" + "Results" nav links, Scoreboard section, "PROCESS" eyebrow, dormant lead-capture modal (Session 5).
 
 ## How to Resume
 
-**First thing:** read this whole file end-to-end. The hardest-won lessons are in "Active Decisions & Context" — specifically the **HARD CONSTRAINTS** and the **buyer/villain/tone evolution** (the Session 6.5 broadening from leads/carts → "bottlenecks/systems" is critical for any future copy work).
+**First thing:** read this whole file end-to-end. Critical context lives in "Active Decisions & Context" — HARD CONSTRAINTS, the voice north star, the buyer/villain/tone evolution, and the Session 7 NEW context (`.md` leak lesson, Cal.com prefill, Make architecture).
 
 Verify current live state:
-- https://romanalabs.com → main site (open in **incognito** to bypass browser cache). New H1: "Scale the business. *Not the headcount.*"
-- https://romanalabs.com/contact/ → 6-field lead form. Submissions POST to Make.com webhook.
-- https://romanalabs-website.samirflores13.workers.dev → Cloudflare Worker preview (mirror).
+- https://romanalabs.com → main site (open in **incognito** to bypass browser cache). H1: "Scale the business. *Not the headcount.*"
+- https://romanalabs.com/contact/ → 6-field lead form. Submits to Make webhook, opens Cal.com with name/email prefill.
+- https://romanalabs-website.samirflores13.workers.dev → Cloudflare Worker preview.
 
 If picking up new work, the priority queue is in "What Comes Next":
-1. Flip apex domain to Cloudflare Worker (dashboard-only, user action)
-2. Verify Make.com scenario is wired up + test submission
-3. X/Twitter footer URL when user provides
-4. Optional self-hosted fonts
-5. Compliance badge verification
+1. **User actions in Make/Airtable/Cal/Cloudflare** (not your job — but be ready to help debug if user gets stuck)
+2. **Privacy policy** (HIGH — real compliance gap; static page + consent line on form)
+3. **Submission ID** (cheap traceability win)
+4. Then: Turnstile (when spam appears), Worker proxy (later), etc.
 
 Editing rules (DO NOT BREAK):
-- **All site edits land in [index.html](index.html) or [contact/index.html](contact/index.html).** Both files have inline `<style>` + `<script>` blocks. Use Ctrl+F to navigate; **do not externalize content**.
-- **Bump cache-bust `?v=N`** in `<link>` / `<script>` references **whenever `assets/site.css` changes.** Currently `?v=4`. For inline HTML/CSS/JS edits, no bump needed.
+- **All site edits land in [index.html](index.html) or [contact/index.html](contact/index.html).** Inline `<style>` + `<script>`. Don't externalize.
+- **Bump `?v=N`** in `<link>` / `<script>` refs **whenever `assets/site.css` changes.** Currently `?v=4`.
 - **Push:** `git -c http.version=HTTP/1.1 push origin main`.
-- **Deploy to Cloudflare:** `npx wrangler deploy` from project root (after push).
-- **Brand tokens:** `--accent #D4AF37` gold, `--emerald #1B4332`, `--bg-primary #F9F9F7` alabaster, `--bg-card #0A0D0B` obsidian. Display font Space Grotesk, body Inter.
-- **Copy voice (Session 6.5 NORTH STAR):** simple words, clever framing, distinctive positioning. Parallel-structure declaratives ("X. Not Y." or "X is easy. Y is hard."). NOT lead/cart-specific in hero or problem framing — use "bottlenecks / systems / workflows" instead. Em dashes minimal. Don't lead with villain-attack; lead with positioning.
-- **Cal.com link** always secondary, never competing primary button.
-- **Don't fabricate** testimonials, named clients (real ones in cards), or compliance claims. Flag and ask.
-- **No architectural changes without asking.** No externalization, no pre-built Tailwind, no sweeping refactors.
+- **Deploy to Cloudflare:** `npx wrangler deploy` from project root after push.
+- **`.md` files are blocked from the Worker by `.assetsignore`'s `*.md` glob.** Don't override.
+- **Brand tokens:** `--accent #D4AF37` gold, `--emerald #1B4332`, `--bg-primary #F9F9F7` alabaster, `--bg-card #0A0D0B` obsidian. Space Grotesk + Inter.
+- **Copy voice:** simple words, clever framing, distinctive positioning. Parallel-structure declaratives. Em dashes minimal. NOT lead/cart-specific in hero/problem — use "bottlenecks / systems / workflows."
+- **Cal.com link** always secondary, never competing primary button. Now passes `?name=&email=` as URL params.
+- **Don't fabricate** testimonials, named clients, or compliance claims.
+- **No architectural changes without asking.**

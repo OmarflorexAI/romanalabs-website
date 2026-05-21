@@ -1,6 +1,6 @@
 # Progress Checkpoint
-> Last updated: 2026-05-21 (eighth update — post-Session-7: Make automation design, navbar polish, Cal.com URL prefill, backend hardening notes, .md leak fix) by context-checkpoint skill
-> Context usage at time of checkpoint: ~85%
+> Last updated: 2026-05-21 (ninth update — post-Session-7.5: Monk-style final CTA card + large-screen typography scaling) by context-checkpoint skill
+> Context usage at time of checkpoint: ~90%
 
 ## Project Overview
 ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\Users\admin\website-romanalabs\`. Pure HTML/CSS/JS, no backend, no database. Domain `romanalabs.com`. **Dual-deployed:** GitHub Pages (primary, serving `romanalabs.com`) AND Cloudflare Workers (`romanalabs-website.samirflores13.workers.dev` — preview only until apex domain is flipped). Lead form ingests to **Make.com webhook**. The site keeps the pre-overhaul setup: Tailwind via CDN runtime + all CSS/JS inline + a single shared `assets/site.css` for brand tokens and footer styles.
@@ -106,11 +106,31 @@ ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\U
 
 41. **Submission ID discussion**: user asked if a unique per-submission ID is necessary. Answered: not necessary (Make + Airtable already generate IDs) but worth adding for traceability/dedup/audit/GDPR. Cost is 3 lines of JS + 1 Airtable field. **Not yet implemented** — user has the implementation in `BACKEND_AND_HARDENING_NOTES.md` and can ship when ready.
 
+### Session 7.5 (2026-05-21) — Monk-style final CTA card + large-screen typography (`cef98f5`)
+
+42. **Final CTA card redesigned** to match a reference image user shared (Monk Group's "Start Your Transformation" card). User direction: same shape (chamfered top-right corner, smooth radial gradient, glowing brand mark on the right, more compact), **keep our existing colors** (don't switch to red), shorten card height.
+    - New `.cta-card` class with:
+      - `clip-path: polygon(0 0, calc(100% - 56px) 0, 100% 56px, 100% 100%, 0 100%)` — cuts the top-right corner at 45°. Mobile drops the chamfer to 36px.
+      - Radial gradient (gold glow concentrated at 88% horizontal, 50% vertical) layered over a linear obsidian gradient (`#0F1310 → #0A0D0B → #14110A`).
+      - `::before` pseudo-element with inset 1px white-7% box-shadow (clip-path-matched) acts as the border since real borders don't render on clipped shapes.
+    - New `.cta-glow-mark` — uses the ROMANALABS SVG logo positioned absolute on the right, recolored to gold via `filter: brightness(0) saturate(100%) invert(75%) sepia(45%) saturate(820%) hue-rotate(2deg) brightness(98%) contrast(92%)` + two drop-shadow gold glow layers. Mirrors the reference's "monk" glow pattern using our actual logo mark.
+    - Card padding reduced: was `p-8 sm:p-10 lg:p-14`, now `clamp(28px, 4vw, 48px) clamp(24px, 4vw, 56px)`. Heading max-width capped at 60% of card width via `.cta-card-inner` so headline doesn't stretch into the glow zone.
+    - Headline shortened: "Find the three places AI pays you back fastest." → **"Find the places AI pays you back fastest."** (user request: drop "three").
+    - Subhead rewritten in positioning voice: "An AI strategy session that uncovers your three highest-leverage opportunities and maps the build plan for the first one. Free. 30 minutes."
+    - Button text unchanged ("Get in Touch"), padding tightened (`px-7 py-3.5` → `px-6 py-3`) to match the more compact card.
+
+43. **Large-screen responsive scaling** — user noted content felt small on bigger displays:
+    - Bumped `.max-content` max-width `1280px → 1400px` for default desktop.
+    - Added media queries:
+      - `@media (min-width: 1600px)`: `heading-xl` max bumped to 88px, `heading-lg` to 56px, body text to 17px.
+      - `@media (min-width: 2200px)`: `.max-content` max-width to 1600px, `heading-xl` to 104px, `heading-lg` to 64px.
+    - Reason: on 1920+ displays, content pinned to 1280px felt centered-with-too-much-whitespace, and clamp() typography hit its 72px max too early. Now scales gracefully through 4K.
+
 ## Current State
 
 - **Branch:** `main`, fully pushed to `origin/main` (clean working tree).
-- **Latest commit:** `d97cc9a` — Block all .md from Cloudflare Worker deploys
-- **Session 7 commit chain:** `306ef6f` → `e9f8af2` → `d97cc9a`
+- **Latest commit:** `cef98f5` — Final CTA card redesign + large-screen typography scaling
+- **Session 7 commit chain:** `306ef6f` → `e9f8af2` → `d97cc9a` → `8a6fa54` (checkpoint) → `cef98f5`
 - **Hosting:**
   - **Primary live:** GitHub Pages → `romanalabs.com` (Cloudflare DNS/proxy in front)
   - **Worker preview:** `https://romanalabs-website.samirflores13.workers.dev`
@@ -129,8 +149,8 @@ ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\U
 - **Process H2:** "How we *work.*" (untouched, runway 420vh)
 - **Security H2:** "Your data is yours. *Built that way from day one.*"
 - **Security sub:** "Zero retention by default. Private cloud deploy. Audit-ready by design. Nothing you build with us ever trains anyone else's model."
-- **Final CTA H2:** "Find the three places AI *pays you back fastest.*"
-- **Final CTA sub:** "A 30-minute strategy session. Free. We map the three highest-leverage AI systems in your business and build the first one in 4 weeks. No deck. No retainer."
+- **Final CTA H2:** "Find the places AI *pays you back fastest.*" (Session 7.5 — shortened)
+- **Final CTA sub:** "An AI strategy session that uncovers your three highest-leverage opportunities and maps the build plan for the first one. Free. 30 minutes." (Session 7.5)
 - **Footer tagline:** "Scale the business. Not the headcount. AI systems your team owns, live in 4 weeks."
 
 ## What Comes Next
@@ -176,6 +196,13 @@ ROMANALABS marketing site — static two-page site (`/` and `/contact`) at `c:\U
 - **Villain (DE-EMPHASIZED in Session 6.5):** the $20K/mo ChatGPT-wrapper agency frame is still real but no longer leads headlines. The 85% pilot-death stat is the remaining villain anchor.
 - **Tone:** simple, clever, declarative. Parallel-structure rhythm.
 - **Hero H1 is unlocked.** Current: "Scale the business. *Not the headcount.*"
+
+### Session 7.5 NEW context
+
+- **Final CTA card uses a chamfered top-right corner via clip-path.** Real CSS borders DO NOT render on clip-path elements — that's why there's a `::before` pseudo-element with `inset 0 0 0 1px rgba(255,255,255,0.07)` box-shadow and matching clip-path. If a future agent tries to add a normal `border:` to `.cta-card`, it won't show.
+- **Card uses our existing palette only.** User was explicit: do NOT change colors. The radial gradient is gold (`rgba(212, 175, 55, 0.18)` at most) layered over obsidian. Glow mark filter is a hue-shift-to-gold + drop-shadow stack.
+- **Large-screen typography boost (1600px / 2200px breakpoints).** Don't undo this. Reason: on 1920+ displays the site previously felt small because `.max-content` was pinned to 1280px and typography clamps maxed at 72px. The new breakpoints lift both ceilings.
+- **`.max-content` is now 1400px default** (was 1280px). Some legacy assumptions about content width may need verification if you add new full-width sections.
 
 ### Session 7 NEW context
 
